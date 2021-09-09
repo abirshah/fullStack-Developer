@@ -21,17 +21,17 @@ the object. In autometed pet door system, some of the feature would be:
 ## Authors
 - Muhammad Shah Newaz (ID: 25067022) (GitHub Username: abirshah)(Team Leader)
 - Deepkumar Patel (ID:40096716) (GitHub Username:   )
--Ahmed Haffoudah (ID:40095428) (GitHub Username:   )
--Badr Saidi (ID:40098327) (GitHub Username:   )
--Jamal Chekkouri (ID:40085329) (GitHub Username:   )
--Marieme Kourouss (ID:40095022) (GitHub Username:   )
--Mohammad Rakimul Huq (ID:40072042) (GitHub Username:   )
--Hasan Ahmed (ID:   ) (GitHub Username:   )
+- Ahmed Haffoudah (ID:40095428) (GitHub Username:   )
+- Badr Saidi (ID:40098327) (GitHub Username:   )
+- Jamal Chekkouri (ID:40085329) (GitHub Username:   )
+- Marieme Kourouss (ID:40095022) (GitHub Username:   )
+- Mohammad Rakimul Huq (ID:40072042) (GitHub Username:   )
+- Hasan Ahmed (ID:   ) (GitHub Username:   )
 
 ## Technologies
 Autometed Pet Door System is created using following thechnologies and tools:
 - [Python](https://www.python.org/) 
-<dd> Python is powerful programming language which can be used building various robust application.
+  <dd> Python is powerful programming language which can be used building various robust application.
   It is number one choice for developer application like Machine Learning because python offers various 
   open source libraries for creaing Machine Learning model</dd>
 - [GitHub](https://github.com/)
