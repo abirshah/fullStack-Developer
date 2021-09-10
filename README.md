@@ -1,4 +1,5 @@
-# Autometed Pet Door System [SOEN 490] (Team fullStack-developer)
+# Autometed Pet Door System.
+[SOEN 490] (Team fullStack-developer)
 
 ## Objective 
 Create an automated pet door system which can recognize pet and open the door for coming inside or going outside.
@@ -40,8 +41,11 @@ Autometed Pet Door System is created using following thechnologies and tools:
   <dd>Discord is a VoIP, instant messaging and digital distribution platform designed for creating communities.</dd>
   
 ## Architecture
-
+The project architure will depend on the architecture of the various libraries of the frame used in the project.
 
 ## Install
-
+1. Install [Python 3.8](https://www.python.org/downloads/)
+2. Install [Anaconda](https://www.anaconda.com/products/individual-d)
+3. Install [Pip](https://anaconda.org/anaconda/pip)
+4. Install [Pycharm](https://www.jetbrains.com/pycharm/download/#section=windows)
 
