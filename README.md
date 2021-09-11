@@ -28,6 +28,7 @@ the object. In autometed pet door system, some of the feature would be:
 - Marieme Kourouss (ID:40095022) (GitHub Username:   )
 - Mohammad Rakimul Huq (ID:40072042) (GitHub Username:   )
 - Hasan Ahmed (ID:   ) (GitHub Username:   )
+- Michael Garner (ID:26338739) (GitHub Username:  )
 
 ## Technologies
 Autometed Pet Door System is created using following thechnologies and tools:
