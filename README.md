@@ -23,7 +23,7 @@ the object. In autometed pet door system, some of the feature would be:
 - Muhammad Shah Newaz (ID: 25067022) (GitHub Username: abirshah)(Team Leader)
 - Deepkumar Patel (ID:40096716) (GitHub Username:   )
 - Ahmed Haffoudah (ID:40095428) (GitHub Username:   )
-- Badr Saidi (ID:40098327) (GitHub Username:   )
+- Badr Saidi (ID:40098327) (GitHub Username: BadrSaidi)
 - Jamal Chekkouri (ID:40085329) (GitHub Username:   )
 - Marieme Kourouss (ID:40095022) (GitHub Username:   )
 - Mohammad Rakimul Huq (ID:40072042) (GitHub Username:   )
