@@ -48,5 +48,5 @@ The project architure will depend on the architecture of the various libraries o
 2. Install [Anaconda](https://www.anaconda.com/products/individual-d)
 3. Install [Pip](https://anaconda.org/anaconda/pip)
 4. Install [Pycharm](https://www.jetbrains.com/pycharm/download/#section=windows)
-5. Instal  numpy with command: conda install numpy
+5. Instal  numpy with command: conda install numpy or pip install numpy
 
