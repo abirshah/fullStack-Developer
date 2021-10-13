@@ -20,13 +20,13 @@ Features of the Automated System are:
 
 ## Authors
 - Muhammad Shah Newaz (ID: 25067022) (GitHub Username: abirshah)(Team Leader)
-- Deepkumar Patel (ID:40096716) (GitHub Username:   )
+- Deepkumar Patel (ID:40096716) (GitHub Username:deeppatel-11)
 - Ahmed Haffoudah (ID:40095428) (GitHub Username:   )
 - Badr Saidi (ID:40098327) (GitHub Username: BadrSaidi)
-- Jamal Chekkouri (ID:40085329) (GitHub Username:   )
-- Marieme Kourouss (ID:40095022) (GitHub Username:   )
-- Mohammad Rakimul Huq (ID:40072042) (GitHub Username:   )
-- Hasan Ahmed (ID:   ) (GitHub Username:   )
+- Jamal Chekkouri (ID:40085329) (GitHub Username:JChekkouri)
+- Marieme Kourouss (ID:40095022) (GitHub Username:mariemek)
+- Mohammad Rakimul Huq (ID:40072042) (GitHub Username:Rak-bot)
+- Hasan Ahmed (ID:27546467) (GitHub Username:hasan-ahmed )
 - Michael Garner (ID:26338739) (GitHub Username:  MikeG3)
 
 ## Technologies
