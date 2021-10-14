@@ -5,15 +5,14 @@
 Create an automated pet door system which can recognize pet and open the door for coming inside or going outside.
 
 ## Description 
-An automated pet door system is an system which able to recognize pet through it's object detection mechanism.
-Detection mechanism is build using Machine Learning and Deep Learning concept. Using Machine Learning concept model is 
-build and train model with images and videos in order to detect an object. Model can be used to detect various nature of 
-the object. In autometed pet door system, some of the feature would be:
-
-- Detect of pet.
-- Open the door when pet is recognize.
-- If try to bring unknown animal such as bird, door sould not be open.
-- Detect type of the pet such as cat, dog etc.
+An automated pet door system which is able to recognize a pet through it's object detection mechanism.
+Detection mechanism is built using Machine Learning and Deep Learning concepts. A Machine Learning concept model buidls and trains itself with images and videos in order to detect an object. This Model can be used to detect various attributes of 
+the object it detects in its surrounding enviornment. 
+Features of the Automated System are:
+- Pet Detection
+- Open the door when pet is recognized
+- Refuse entry to unknown and identifiable animals and objects
+- Detect the type of the pet (cat, dog etc..)
 - Log weight of the pet.
 - Log size of the pet.
 - Log color of the pet.
@@ -21,14 +20,14 @@ the object. In autometed pet door system, some of the feature would be:
 
 ## Authors
 - Muhammad Shah Newaz (ID: 25067022) (GitHub Username: abirshah)(Team Leader)
-- Deepkumar Patel (ID:40096716) (GitHub Username:   )
+- Deepkumar Patel (ID:40096716) (GitHub Username: deeppatel-11)
 - Ahmed Haffoudah (ID:40095428) (GitHub Username:   )
 - Badr Saidi (ID:40098327) (GitHub Username: BadrSaidi)
-- Jamal Chekkouri (ID:40085329) (GitHub Username:   )
-- Marieme Kourouss (ID:40095022) (GitHub Username:   )
-- Mohammad Rakimul Huq (ID:40072042) (GitHub Username:   )
-- Hasan Ahmed (ID:   ) (GitHub Username:   )
-- Michael Garner (ID:26338739) (GitHub Username:  )
+- Jamal Chekkouri (ID:40085329) (GitHub Username: JChekkouri)
+- Marieme Kourouss (ID:40095022) (GitHub Username: mariemek)
+- Mohammad Rakimul Huq (ID:40072042) (GitHub Username: Rak-bot)
+- Hasan Ahmed (ID:27546467) (GitHub Username:h asan-ahmed )
+- Michael Garner (ID:26338739) (GitHub Username:  MikeG3)
 
 ## Technologies
 Autometed Pet Door System is created using following thechnologies and tools:
@@ -49,4 +48,5 @@ The project architure will depend on the architecture of the various libraries o
 2. Install [Anaconda](https://www.anaconda.com/products/individual-d)
 3. Install [Pip](https://anaconda.org/anaconda/pip)
 4. Install [Pycharm](https://www.jetbrains.com/pycharm/download/#section=windows)
+5. Instal  numpy  adding
 
