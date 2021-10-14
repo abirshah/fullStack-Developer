@@ -71,7 +71,7 @@ for current_dir, dirs, files in os.walk('.'):
     # Going through all files
     for f in files:
         # Checking if filename ends with '.jpeg'
-        if f.endswith('.jpg'):
+        if f.endswith('.jpeg'):
             # Preparing path to save into train.txt file
             # Pay attention!
             # If you're using Windows, it might need to change
