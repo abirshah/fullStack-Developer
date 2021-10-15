@@ -3,10 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #network to custom weight file and cfg file
-net = cv2.dnn.readNetFromDarknet("custom_files/yolov3_custom.cfg",r"custom_files\yolov3_custom_2000.weights")
+net = cv2.dnn.readNetFromDarknet("yolov3_custom.cfg","yolov3_custom_2000.weights")
 #reading the classes.names file 
 classes = []
-with open('custom_files/classes.names', 'r') as f:
+with open('classes.names', 'r') as f:
     classes = [line.strip() for line in f.readlines()]
 print(classes)
 
@@ -18,7 +18,7 @@ while 1:
     #Resizing the image
     img = cv2.resize(img,(1280,720))
     #getting the height and weight
-    hight,width,_ = img.shape
+    height,width,_ = img.shape
     blob = cv2.dnn.blobFromImage(img, 1/255,(416,416),(0,0,0),swapRB = True,crop= False)
 
     net.setInput(blob)
@@ -42,9 +42,9 @@ while 1:
             #check whether the confidence is above 70 percent
             if confidence > 0.7:
                 center_x = int(detection[0] * width)
-                center_y = int(detection[1] * hight)
+                center_y = int(detection[1] * height)
                 w = int(detection[2] * width)
-                h = int(detection[3]* hight)
+                h = int(detection[3]* height)
                 x = int(center_x - w/2)
                 y = int(center_y - h/2)
                 #append the coordinates of the bounding box
@@ -65,9 +65,9 @@ while 1:
             confidence = score[class_id]
             if confidence > 0.5:
                 center_x = int(detection[0] * width)
-                center_y = int(detection[1] * hight)
+                center_y = int(detection[1] * height)
                 w = int(detection[2] * width)
-                h = int(detection[3]* hight)
+                h = int(detection[3]* height)
 
                 x = int(center_x - w/2)
                 y = int(center_y - h/2)

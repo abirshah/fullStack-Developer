@@ -1,4 +1,4 @@
-+-#!/usr/bin/env python
+#+-#!/usr/bin/env python
 # coding: utf-8
 
 import cv2
@@ -14,12 +14,12 @@ with open('classes.names', 'r') as f:
 print(classes)
 
 #Reading the image you are testing
-my_img = cv2.imread('../tom13.jpg')
+my_img = cv2.imread('../hilly5.jpg')
 my_img = cv2.resize(my_img,(800,600))
 
 plt.imshow(my_img)
 #getting the height and width
-ht, wt , _ = my_img.shape 
+height, width , _ = my_img.shape 
 blob = cv2.dnn.blobFromImage(my_img, 1/255,(416,416),(0,0,0),swapRB = True,crop= False)
 blob.shape
 net.setInput(blob)
@@ -40,10 +40,10 @@ for output in layer_out:
         confidence = score[class_id]
         #check whether the confidence is above 60 percent
         if confidence > 0.6:
-            center_x = int(detection[0] * wt)
-            center_y = int(detection[1] * ht)
-            w = int(detection[2] * wt)
-            h = int(detection[3]* ht)
+            center_x = int(detection[0] * width)
+            center_y = int(detection[1] * height)
+            w = int(detection[2] * width)
+            h = int(detection[3]* height)
             x = int(center_x - w/2)
             y = int(center_y - h/2)
             #append the coordinates of the bounding box
