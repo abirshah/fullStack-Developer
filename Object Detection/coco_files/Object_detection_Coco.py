@@ -11,7 +11,6 @@ net = cv2.dnn.readNetFromDarknet('yolov4.cfg','yolov4.weights')
 classes = []
 with open('coco.names', 'r') as f:
     classes = [line.strip() for line in f.readlines()]
-print(classes)
 
 #Reading the image you are testing
 my_img = cv2.imread('../Dataset.jpg')
