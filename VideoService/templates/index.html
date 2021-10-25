@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE-edge">
-    <meta name="viewport" content="width-device-width, initial-scale=1.0">
-</head>
-<body>
-    <h1>Object Detection Stream</h1>
-</body>
-</html>
+{% extends 'base.html' %} {% block content %}
+<div style="margin-top: 5vh;">
+    <h3 style="text-align: center;">A pet has been detected!</h3>
+    <h3 style="text-align: center;">Type: Cat 🐱</h3>
+    <h3 style="text-align: center;">Breed: Bengal Cat</h3>
+    <div style="justify-content: center; display: flex; margin-top: 2vh; height: 50vh;">
+        <img src="{{ url_for('video') }}">
+    </div>
+</div>
+{% endblock %}
