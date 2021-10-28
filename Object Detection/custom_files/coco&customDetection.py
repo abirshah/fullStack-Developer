@@ -19,9 +19,9 @@ plt.imshow(my_img)
 height, width , _ = my_img.shape 
 blob = cv2.dnn.blobFromImage(my_img, 1/255,(416,416),(0,0,0),swapRB = True,crop= False)
 blob.shape
-
 net.setInput(blob)
 #Getting the bonding boxes, confidence for each box, and class ids
+
 boxes =[]
 confidences = []
 class_ids = []

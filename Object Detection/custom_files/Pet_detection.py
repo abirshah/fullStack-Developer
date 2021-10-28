@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #network to custom weight file and cfg file
-net = cv2.dnn.readNetFromDarknet('yolov3_custom.cfg','yolov3_custom_2000.weights')
+net = cv2.dnn.readNetFromDarknet('yolov4-custom.cfg','yolov4-custom_10000.weights')
 #reading the classes.names file
 classes = []
 with open('classes.names', 'r') as f:
@@ -14,7 +14,7 @@ with open('classes.names', 'r') as f:
 print(classes)
 
 #Reading the image you are testing
-my_img = cv2.imread('../hilly5.jpg')
+my_img = cv2.imread('../tom13.jpg')
 my_img = cv2.resize(my_img,(800,600))
 
 plt.imshow(my_img)
@@ -65,7 +65,7 @@ if  len(indexes)>0:
         color = colors[i]
         #using OpenCV to write on the image.
         cv2.rectangle(my_img,(x,y),(x+w,y+h),color,2)
-        cv2.putText(my_img,label + " " + confidence, (x,y+20),font,2,(0,0,0),2)
+        cv2.putText(my_img,label + " " + confidence, (x,y+20),font,2,color,2)
 else:
     print("No object detected")
 
