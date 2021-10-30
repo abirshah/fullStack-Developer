@@ -50,7 +50,8 @@ font = cv2.FONT_HERSHEY_PLAIN
 colors = np.random.uniform(0, 255, size=(len(boxes), 3))
 for i in indexes.flatten():
     if str(classes[class_ids[i]]) == 'cat' or str(classes[class_ids[i]]) == 'dog':
-        print('found to be a ', str(classes[class_ids[i]]))
+        # prints whether a cat or dog was found
+        print('Found to be a ', str(classes[class_ids[i]]))
         net2 = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg', 'weight_files/yolov4-custom_10000.weights')
         # reading the classes.names file
         with open('names_files/classes.names', 'r') as f:
@@ -88,14 +89,16 @@ for i in indexes.flatten():
                 x, y, w, h = boxes[i]
                 # Retrieving the class name
                 label = str(classes[class_ids[i]])
+                # prints all the body parts found in the console
                 print('it was a ', str(classes[class_ids[i]]))
                 confidence = str(round(confidences[i], 2))
                 color = colors[i]
                 # using OpenCV to write on the image.
+                # This puts a bounding box around each of the body part detected
                 cv2.rectangle(my_img, (x, y), (x + w, y + h), color, 2)
                 cv2.putText(my_img, label + " " + confidence, (x, y + 20), font, 2, (0, 0, 0), 2)
         else:
-            print("No pet found")
+            print("No body part was recognized by the model")
 # Displaying the image
 cv2.imshow('img', my_img)
 cv2.waitKey(0)
