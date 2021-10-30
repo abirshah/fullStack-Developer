@@ -5,7 +5,6 @@ import numpy as np
 # network to coco weight file and cfg file
 net = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
 # reading the coco.names file. The coco model will help to detect dogs, cats, person or bird
-classes = []
 with open('names_files/coco.names', 'r') as f:
     classes = [line.strip() for line in f.readlines()]
 
@@ -54,7 +53,6 @@ for i in indexes.flatten():
         print('found to be a ', str(classes[class_ids[i]]))
         net2 = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg', 'weight_files/yolov4-custom_10000.weights')
         # reading the classes.names file
-        classes = []
         with open('names_files/classes.names', 'r') as f:
             classes = [line.strip() for line in f.readlines()]
 
