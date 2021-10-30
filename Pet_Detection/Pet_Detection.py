@@ -4,7 +4,7 @@ import numpy as np
 
 #network to coco weight file and cfg file
 net = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg','weight_files/yolov4.weights')
-#reading the classes.names file
+#reading the coco.names file. The coco model will help to detect dogs, cats, person or bird
 classes = []
 with open('names_files/coco.names', 'r') as f:
     classes = [line.strip() for line in f.readlines()]
