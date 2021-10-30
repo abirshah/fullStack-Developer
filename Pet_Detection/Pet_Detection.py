@@ -2,17 +2,6 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-# Adds bounding box sizes to the dictionary
-def addingSizeToBoundingBoxes(bbDictionary, className, size):
-    if className in bbDictionary.keys():
-        bbDictionary[className].append(size)
-    else:
-        list_size = []
-        list_size.append(size)
-        bbDictionary[className] = list_size
-
-
 # network to coco weight file and cfg file
 net = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
 # reading the coco.names file. The coco model will help to detect dogs, cats, person or bird
@@ -20,7 +9,7 @@ with open('names_files/coco.names', 'r') as f:
     classes = [line.strip() for line in f.readlines()]
 
 # Reading the image you are testing
-my_img = cv2.imread('test_images/tom13.jpg')
+my_img = cv2.imread('test_images/Dataset.jpg')
 my_img = cv2.resize(my_img, (800, 600))
 
 plt.imshow(my_img)
@@ -53,14 +42,12 @@ for output in layer_out:
             confidences.append((float(confidence)))
             class_ids.append(class_id)
 
-# indexes will be empty if there is no object detected in the image
+# indexes will be empty if there is no objext detected in the image
 indexes = cv2.dnn.NMSBoxes(boxes, confidences, .5, .4)
+
 font = cv2.FONT_HERSHEY_PLAIN
-bounding_box_size = {}
 # generate different colors foreach bounding box
 colors = np.random.uniform(0, 255, size=(len(boxes), 3))
-if len(indexes) == 0:
-    print("No object found")
 for i in indexes.flatten():
     if str(classes[class_ids[i]]) == 'cat' or str(classes[class_ids[i]]) == 'dog':
         # prints whether a cat or dog was found
@@ -92,15 +79,14 @@ for i in indexes.flatten():
                     boxes.append([x, y, w, h])
                     confidences.append((float(confidence)))
                     class_ids.append(class_id)
-        # To select random colors for each bounding box.
-        colors = np.random.uniform(0, 255, size=(len(boxes), 3))
+
         indexes = cv2.dnn.NMSBoxes(boxes, confidences, .5, .4)
+
+        font = cv2.FONT_HERSHEY_PLAIN
+        colors = np.random.uniform(0, 255, size=(len(boxes), 3))
         if len(indexes) > 0:
             for i in indexes.flatten():
                 x, y, w, h = boxes[i]
-                # This stores the sze of each bounding box into a dictionary
-                addingSizeToBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w*h)
-
                 # Retrieving the class name
                 label = str(classes[class_ids[i]])
                 # prints all the body parts found in the console
@@ -114,9 +100,6 @@ for i in indexes.flatten():
         else:
             print("No body part was recognized by the model")
 # Displaying the image
-print(bounding_box_size)
 cv2.imshow('img', my_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-
-
