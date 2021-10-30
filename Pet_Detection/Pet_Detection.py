@@ -2,13 +2,23 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 # Adds bounding box sizes to the dictionary
-def addingSizeToBoundingBoxes(bbDictionary, className, size):
+def addingSizeOfBoundingBoxes(bbDictionary, className, size):
     if className in bbDictionary.keys():
         bbDictionary[className].append(size)
     else:
         list_size = []
         list_size.append(size)
+        bbDictionary[className] = list_size
+
+# Adds bounding box sizes to the dictionary
+def addingProportionsOfBoundingBoxes(bbDictionary, className, width, height):
+    if className in bbDictionary.keys():
+        bbDictionary[className].append([width,height])
+    else:
+        list_size = []
+        list_size.append([width,height])
         bbDictionary[className] = list_size
 
 # network to coco weight file and cfg file
@@ -33,6 +43,8 @@ confidences = []
 class_ids = []
 last_layer = net.getUnconnectedOutLayersNames()
 layer_out = net.forward(last_layer)
+bounding_box_size = {}
+propostion_of_boxes = {}
 for output in layer_out:
     for detection in output:
         score = detection[5:]
@@ -53,15 +65,18 @@ for output in layer_out:
 
 # indexes will be empty if there is no object detected in the image
 indexes = cv2.dnn.NMSBoxes(boxes, confidences, .5, .4)
-
 font = cv2.FONT_HERSHEY_PLAIN
-bounding_box_size = {}
+
 # generate different colors foreach bounding box
 colors = np.random.uniform(0, 255, size=(len(boxes), 3))
 if len(indexes) == 0:
     print("No object found")
 for i in indexes.flatten():
     if str(classes[class_ids[i]]) == 'cat' or str(classes[class_ids[i]]) == 'dog':
+        x, y, w, h = boxes[i]
+        # This stores the sze of each bounding box into a dictionary
+        addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
+        addingProportionsOfBoundingBoxes(propostion_of_boxes,str(classes[class_ids[i]]), w ,h)
         # prints whether a cat or dog was found
         print('Found to be a ', str(classes[class_ids[i]]))
         net2 = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg', 'weight_files/yolov4-custom_10000.weights')
@@ -91,17 +106,15 @@ for i in indexes.flatten():
                     boxes.append([x, y, w, h])
                     confidences.append((float(confidence)))
                     class_ids.append(class_id)
-
-        indexes = cv2.dnn.NMSBoxes(boxes, confidences, .5, .4)
-
-        font = cv2.FONT_HERSHEY_PLAIN
         # To select random colors for each bounding box.
         colors = np.random.uniform(0, 255, size=(len(boxes), 3))
+        indexes = cv2.dnn.NMSBoxes(boxes, confidences, .5, .4)
         if len(indexes) > 0:
             for i in indexes.flatten():
                 x, y, w, h = boxes[i]
                 # This stores the sze of each bounding box into a dictionary
-                addingSizeToBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
+                addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
+                addingProportionsOfBoundingBoxes(propostion_of_boxes, str(classes[class_ids[i]]), w, h)
                 # Retrieving the class name
                 label = str(classes[class_ids[i]])
                 # prints all the body parts found in the console
@@ -114,8 +127,9 @@ for i in indexes.flatten():
                 cv2.putText(my_img, label + " " + confidence, (x, y + 20), font, 2, (0, 0, 0), 2)
         else:
             print("No body part was recognized by the model")
-print(bounding_box_size)
 # Displaying the image
+print(bounding_box_size)
+print(propostion_of_boxes)
 cv2.imshow('img', my_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
