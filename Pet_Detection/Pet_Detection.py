@@ -3,6 +3,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+def normallyDetected(classNames, classIds, indexes):
+    for i in indexes.flatten():
+        if str(classNames[classIds[i]]) == 'bird' or str(classNames[classIds[i]]) == 'person':
+            return False
+    return True
+
+
 # Adds bounding box sizes to the dictionary
 def addingSizeOfBoundingBoxes(bbDictionary, className, size):
     if className in bbDictionary.keys():
@@ -12,14 +19,16 @@ def addingSizeOfBoundingBoxes(bbDictionary, className, size):
         list_size.append(size)
         bbDictionary[className] = list_size
 
+
 # Adds bounding box sizes to the dictionary
 def addingProportionsOfBoundingBoxes(bbDictionary, className, width, height):
     if className in bbDictionary.keys():
-        bbDictionary[className].append([width,height])
+        bbDictionary[className].append([width, height])
     else:
         list_size = []
-        list_size.append([width,height])
+        list_size.append([width, height])
         bbDictionary[className] = list_size
+
 
 # network to coco weight file and cfg file
 net = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
@@ -28,7 +37,7 @@ with open('names_files/coco.names', 'r') as f:
     classes = [line.strip() for line in f.readlines()]
 
 # Reading the image you are testing
-my_img = cv2.imread('test_images/tom13.jpg')
+my_img = cv2.imread('test_images/cat_bird2.jpg')
 my_img = cv2.resize(my_img, (800, 600))
 
 plt.imshow(my_img)
@@ -71,19 +80,26 @@ font = cv2.FONT_HERSHEY_PLAIN
 colors = np.random.uniform(0, 255, size=(len(boxes), 3))
 if len(indexes) == 0:
     print("No object found")
+detectedBool = normallyDetected(classes, class_ids, indexes)
+
 for i in indexes.flatten():
+    x, y, w, h = boxes[i]
+    if str(classes[class_ids[i]]) == 'bird':
+        label = str(classes[class_ids[i]])
+        confidence = str(round(confidences[i], 2))
+        cv2.rectangle(my_img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        cv2.putText(my_img, label + " " + confidence, (x, y + 20), font, 2, (0, 0, 255), 2)
+
     if str(classes[class_ids[i]]) == 'cat' or str(classes[class_ids[i]]) == 'dog':
-        x, y, w, h = boxes[i]
         # This stores the sze of each bounding box into a dictionary
         addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
-        addingProportionsOfBoundingBoxes(propostion_of_boxes,str(classes[class_ids[i]]), w ,h)
+        addingProportionsOfBoundingBoxes(propostion_of_boxes, str(classes[class_ids[i]]), w, h)
         # prints whether a cat or dog was found
         print('Found to be a ', str(classes[class_ids[i]]))
         net2 = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg', 'weight_files/yolov4-custom_10000.weights')
         # reading the classes.names file
         with open('names_files/classes.names', 'r') as f:
             classes = [line.strip() for line in f.readlines()]
-
         net2.setInput(blob)
         last_layer = net2.getUnconnectedOutLayersNames()
         layer_out = net2.forward(last_layer)
