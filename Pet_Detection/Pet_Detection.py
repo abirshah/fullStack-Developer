@@ -143,7 +143,7 @@ for i in indexes.flatten():
                 cv2.putText(my_img, label + " " + confidence, (x, y + 20), font, 2, (0, 0, 0), 2)
         else:
             print("No body part was recognized by the model")
-# Displaying the image
+# Displaying the image for showing bounding box
 print(bounding_box_size)
 print(propostion_of_boxes)
 cv2.imshow('img', my_img)
