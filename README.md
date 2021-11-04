@@ -39,6 +39,10 @@ Autometed Pet Door System is created using following thechnologies and tools:
   <dd>Github is a free service that allows open-source projects or unlimited private repositories.</dd>
 - [Discord version: 74432](https://discord.com/)
   <dd>Discord is a VoIP, instant messaging and digital distribution platform designed for creating communities.</dd>
+- [Rasberry Pi Zero](https://www.raspberrypi.org/)
+  <dd>Rasberry Pi Zero is a low cost, single board computer. It is equpipped with an operating system, it supports a camera, wifi and has input and output pins for    interfacing with other physical or devices</dd>
+- [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+  <dd>Flask is a microweb framework written in Python.</dd>
   
 ## Architecture
 The project architure will depend on the architecture of the various libraries of the frame used in the project.
@@ -48,5 +52,6 @@ The project architure will depend on the architecture of the various libraries o
 2. Install [Anaconda](https://www.anaconda.com/products/individual-d)
 3. Install [Pip](https://anaconda.org/anaconda/pip)
 4. Install [Pycharm](https://www.jetbrains.com/pycharm/download/#section=windows)
-5. Instal  numpy  adding
+5. Install  numpy  adding
+6. Install [Flask](https://flask.palletsprojects.com/en/2.0.x/installation/)
 
