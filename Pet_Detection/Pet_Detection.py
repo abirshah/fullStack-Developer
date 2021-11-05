@@ -98,7 +98,7 @@ def main():
     mail_bird_classes = getClasses('names_files/mail-bird.names')
 
     # Reading the image you are testing
-    my_img = cv2.imread('test_images/dog.jpg')
+    my_img = cv2.imread('test_images/cat.jpg')
     my_img = cv2.resize(my_img, (800, 600))
 
     plt.imshow(my_img)
@@ -151,6 +151,11 @@ def main():
                     print('Bird found in the pets mouth')
 
         if str(classes[class_ids[i]]) == 'cat' or str(classes[class_ids[i]]) == 'dog':
+            #x, y, w, h = boxes[i]
+            #label = str(classes[class_ids[i]])
+            #confidence = str(round(confidences[i], 2))
+            #cv2.rectangle(my_img, (x, y), (x + w, y + h), (0,255,0), 2)
+            #cv2.putText(my_img, label + " " + confidence, (x, y + 20), font, 2, (0, 0, 0), 2)
             # This stores the sze of each bounding box into a dictionary
             addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
             addingProportionsOfBoundingBoxes(propostion_of_boxes, str(classes[class_ids[i]]), w, h)
@@ -192,8 +197,8 @@ def main():
                     if len(center) == 2:
                         dx, dy = center[0][0] - center[1][0], center[0][1] - center[1][1]
                         distance = math.sqrt(dx * dx + dy * dy)
-                        cv2.line(my_img, (int(center[0][0]), int(center[0][1])), (int(center[1][0]), int(center[1][1])),
-                                 (255, 255, 255), thickness=2)
+                        #cv2.line(my_img, (int(center[0][0]), int(center[0][1])), (int(center[1][0]), int(center[1][1])),
+                        #         (255, 255, 255), thickness=2)
 
             else:
                 print("No body part was recognized by the model")
