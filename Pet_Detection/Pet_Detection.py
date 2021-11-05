@@ -1,9 +1,8 @@
-import math
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+# checks whether a bird or a person is detected
 def normallyDetected(classNames, classIds, indexes):
     for i in indexes.flatten():
         if str(classNames[classIds[i]]) == 'bird' or str(classNames[classIds[i]]) == 'person':
@@ -41,6 +40,7 @@ def addingCentroid(bbDictionary, className, x, y):
         bbDictionary[className] = list_size
 
 
+# Makes the list for bounding boxes, confidences and class ids detected. 
 def getNumbers(net, width, height):
     # Getting the bonding boxes, confidence for each box, and class ids
     boxes = []
@@ -68,14 +68,17 @@ def getNumbers(net, width, height):
     return boxes, confidences, class_ids
 
 
+#Reads the .names files and makes list of all the classes
 def getClasses(path):
     with open(path, 'r') as f:
         classes = [line.strip() for line in f.readlines()]
     return classes
 
-
+# the main method
 def main():
+    #stores the area of each bounding box
     bounding_box_size = {}
+    # stores the width and height of each bounding box
     propostion_of_boxes = {}
 
     # Setting the font type
@@ -83,11 +86,14 @@ def main():
 
     # network to coco weight file and cfg file
     net = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
+    # network to the mail packages and bird in the mouth custom yolov4 wight file and cfg file
     net_mail_bird = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_mail_bird.cfg',
                                                'weight_files/yolov4-custom_mail_bird.weights')
 
     # reading the coco.names, mail-bird.classes file. The coco model will help to detect dogs, cats, person or bird
     classes = getClasses('names_files/coco.names')
+
+    # reading the mail-bird.names, mail-bird.classes file. The coco model will help to detect dogs, cats, person or bird
     mail_bird_classes = getClasses('names_files/mail-bird.names')
 
     # Reading the image you are testing
@@ -115,9 +121,9 @@ def main():
     colors = np.random.uniform(0, 255, size=(len(boxes), 3))
     if len(indexes) == 0:
         print("No object found")
-    detectedBool = normallyDetected(classes, class_ids, indexes)
 
     for i in indexes.flatten():
+        # w represents the width and h represents the height
         x, y, w, h = boxes[i]
         if str(classes[class_ids[i]]) == 'bird' or str(classes[class_ids[i]]) == 'person':
             label = str(classes[class_ids[i]])
@@ -128,13 +134,13 @@ def main():
 
         if not len(indexes_mail_bird) == 0:
             for j in indexes_mail_bird.flatten():
+                # w2 represents the width and h2 represents the height
                 x2, y2, w2, h2 = boxes_mail_bird[j]
                 if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
                     label_mail = str(mail_bird_classes[class_ids_mail_bird[j]])
                     confidence_mail = str(round(confidences_mail_bird[j], 2))
                     cv2.rectangle(my_img, (x2, y2), (x2 + w2, y2 + h2), (255, 255, 255), 2)
                     cv2.putText(my_img, label_mail + " " + confidence_mail, (x2, y2 + 20), font, 2, (0, 0, 255), 2)
-
                     print("Mail package found on the door")
                 elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth':
                     label_bird = str(mail_bird_classes[class_ids_mail_bird[j]])
@@ -144,7 +150,6 @@ def main():
                     print('Bird found in the pets mouth')
 
         if str(classes[class_ids[i]]) == 'cat' or str(classes[class_ids[i]]) == 'dog':
-
             # This stores the sze of each bounding box into a dictionary
             addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
             addingProportionsOfBoundingBoxes(propostion_of_boxes, str(classes[class_ids[i]]), w, h)
