@@ -30,6 +30,16 @@ def addingProportionsOfBoundingBoxes(bbDictionary, className, width, height):
         bbDictionary[className] = list_size
 
 
+# Adds bounding box sizes to the dictionary
+def addingCentroid(bbDictionary, className, x, y):
+    if className in bbDictionary.keys():
+        bbDictionary[className].append([x, y])
+    else:
+        list_size = []
+        list_size.append([x, y])
+        bbDictionary[className] = list_size
+
+
 def getNumbers(net, width, height):
     # Getting the bonding boxes, confidence for each box, and class ids
     boxes = []
@@ -80,7 +90,7 @@ def main():
     mail_bird_classes = getClasses('names_files/mail-bird.names')
 
     # Reading the image you are testing
-    my_img = cv2.imread('test_images/cat_mail.jpg')
+    my_img = cv2.imread('test_images/dog.jpg')
     my_img = cv2.resize(my_img, (800, 600))
 
     plt.imshow(my_img)
@@ -133,6 +143,7 @@ def main():
                     print('Bird found in the pets mouth')
 
         if str(classes[class_ids[i]]) == 'cat' or str(classes[class_ids[i]]) == 'dog':
+
             # This stores the sze of each bounding box into a dictionary
             addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
             addingProportionsOfBoundingBoxes(propostion_of_boxes, str(classes[class_ids[i]]), w, h)
@@ -148,12 +159,17 @@ def main():
             # To select random colors for each bounding box.
             colors = np.random.uniform(0, 255, size=(len(boxes), 3))
             indexes = cv2.dnn.NMSBoxes(boxes, confidences, .5, .4)
+            centroid_dict = dict()
+            red_zone_list = []
             if len(indexes) > 0:
                 for i in indexes.flatten():
                     x, y, w, h = boxes[i]
                     # This stores the sze of each bounding box into a dictionary
                     addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
                     addingProportionsOfBoundingBoxes(propostion_of_boxes, str(classes[class_ids[i]]), w, h)
+                    center_x = x + w / 2
+                    center_y = y + h / 2
+                    addingCentroid(centroid_dict, str(classes[class_ids[i]]), center_x, center_y)
                     # Retrieving the class name
                     label = str(classes[class_ids[i]])
                     # prints all the body parts found in the console
@@ -164,6 +180,14 @@ def main():
                     # This puts a bounding box around each of the body part detected
                     cv2.rectangle(my_img, (x, y), (x + w, y + h), color, 2)
                     cv2.putText(my_img, label + " " + confidence, (x, y + 20), font, 2, (0, 0, 0), 2)
+
+                for (id, center) in centroid_dict.items():
+                    if len(center) == 2:
+                        dx, dy = center[0][0] - center[1][0], center[0][1] - center[1][1]
+                        distance = math.sqrt(dx * dx + dy * dy)
+                        cv2.line(my_img, (int(center[0][0]), int(center[0][1])), (int(center[1][0]), int(center[1][1])),
+                                 (255, 255, 255), thickness=2)
+
             else:
                 print("No body part was recognized by the model")
     # Displaying the image
