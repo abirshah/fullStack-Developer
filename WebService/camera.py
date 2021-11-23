@@ -1,12 +1,7 @@
 import cv2
 import numpy as np
 from cam_video_stream import CamVideoStream
-from threading import Thread
-import sys
-from queue import Queue
-
-faceDetect = cv2.CascadeClassifier('haarcascade_frontalcatface.xml')
-
+from Services.s3_service import S3Service;
 
 class Video(object):
     def __init__(self, queueSize=128):
@@ -20,7 +15,7 @@ class Video(object):
             self.classes = [line.strip() for line in f.readlines()]
 
     def __del__(self):
-        self.video.release()
+        self.video.stop()
 
     def get_frame(self):
         frame = self.video.read()
