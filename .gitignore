@@ -25,4 +25,5 @@ hs_err_pid*
 .idea
 WebService/env
 WebService/weight_files/*
+WebService/tmp/*
 
