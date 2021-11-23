@@ -1,9 +1,14 @@
 from collections import deque
 from threading import Thread
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 from queue import Queue
-from .s3_service import S3Service
+from Services.s3_service import S3Service
+from Models.events import Events
+import mysql.connector
 import time
 import cv2
+DATABASE_CONNECTION_INFO = 'mysql://admin:abir1971@pet-project.cqlvbpbplnsv.us-east-2.rds.amazonaws.com/automated_pet_door'
 
 class KeyClipService:
     def __init__(self, bufSize=64, timeout=1.0):
@@ -17,11 +22,22 @@ class KeyClipService:
         self.s3_service = S3Service()
         self.outputPath = None
         self.outputFile = None
+        self.labels = []
+        self.db_engine = create_engine(DATABASE_CONNECTION_INFO, echo=False)
+        self.DBSession = scoped_session(
+            sessionmaker(
+                autoflush=True,
+                autocommit=False,
+                bind=self.db_engine
+            )
+        )
 
-    def start(self, outputPath, outputFile, fourcc, fps):
+
+    def start(self, outputPath, outputFile, labels, fourcc, fps):
         self.recording = True
         self.outputPath = outputPath
         self.outputFile = outputFile
+        self.labels = labels
         self.writer = cv2.VideoWriter(outputPath, fourcc, fps,
                                       (self.frames[0].shape[1], self.frames[0].shape[0]), True)
         self.Q = Queue()
@@ -59,8 +75,13 @@ class KeyClipService:
         self.save_key_event_clip()
         self.outputPath = None
         self.outputFile = None
+        self.labels = None
 
     def save_key_event_clip(self):
         result = self.s3_service.upload_file('video-snapshots', self.outputPath, self.outputFile)
-
+        if result:
+            new_event = Events(classes=str(self.labels), video=self.outputFile, access_granted=False)
+            db_session = self.DBSession
+            db_session.add(new_event)
+            db_session.commit()
 

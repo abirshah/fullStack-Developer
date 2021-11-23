@@ -1,24 +1,49 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request, Blueprint, jsonify
+from flask_cors import CORS
 from camera import Video
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
+from Models.shared import db, ma
+from Models.events import Events, EventsSchema
 import os.path
 from Services.s3_service import S3Service
 
 app = Flask(__name__)
+CORS(app)
 basedir = os.path.abspath(os.path.dirname(__file__))
 #Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:abir1971@pet-project.cqlvbpbplnsv.us-east-2.rds.amazonaws.com/automated_pet_door'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Init db
-db = SQLAlchemy(app)
+db.init_app(app)
 # Init ma
-ma = Marshmallow(app)
+ma.init_app(app)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+@app.route('/events', methods=['POST'])
+def add_event():
+    classes = request.json['classes']
+    video = request.json['video']
+    access_granted = request.json['access_granted']
+
+    new_event = Events(classes=str(classes), video=video, access_granted=access_granted)
+    db.session.add(new_event)
+    db.session.commit()
+
+@app.route('/events', methods=['GET'])
+def get_events():
+    all_events = Events.query.all()
+    events_schema = EventsSchema(many=True)
+    result = events_schema.dump(all_events)
+    return jsonify(result)
+
+@app.route('/video/url', methods=['POST'])
+def generate_video_url():
+    video_key = request.json['video']
+    s3_service = S3Service()
+    response = s3_service.generate_url(bucket='video-snapshots', key=video_key)
+    return jsonify({'videoUrl': response})
 
 def gen(camera):
     while True:

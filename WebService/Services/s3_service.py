@@ -1,5 +1,8 @@
 import boto3
 import logging
+
+import botocore
+from botocore.config import Config
 from botocore.exceptions import ClientError
 
 class S3Service:
@@ -17,4 +20,12 @@ class S3Service:
             logging.error(e)
             return False
         return True
+
+    def generate_url(self, bucket, key, expiration=360):
+        try:
+            response = self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key}, ExpiresIn=3600)
+        except ClientError as e:
+            logging.error(e)
+            return None
+        return response
 

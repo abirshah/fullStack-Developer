@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from cam_video_stream import CamVideoStream
-from Services.key_clip_service import KeyClipService
+from key_clip_service import KeyClipService
 import datetime
 
 class Video(object):
@@ -64,11 +64,13 @@ class Video(object):
         colors = np.random.uniform(0, 255, size=(len(boxes), 3))
         updateConsecFrames = len(indexes) <= 0
         if len(indexes) > 0:
+            labels = []
             print("Object has ben detected")
             for i in indexes.flatten():
                 x, y, w, h = boxes[i]
                 # Retrieving the class name
                 label = str(self.classes[class_ids[i]])
+                labels.append(label)
                 confidence = str(round(confidences[i], 2))
                 color = colors[i]
                 # using OpenCV to write on the image.
@@ -77,9 +79,9 @@ class Video(object):
             self.consecFrames = 0
             if not self.keyClipSerivce.recording:
                 timestamp = datetime.datetime.now()
-                p = "{}/{}.avi".format('tmp', timestamp.strftime("%Y%m%d-%H%M%S"))
-                f = "{}.avi".format(timestamp.strftime("%Y%m%d-%H%M%S"))
-                self.keyClipSerivce.start(p,f, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 20)
+                p = "{}/{}.mp4".format('tmp', timestamp.strftime("%Y%m%d-%H%M%S"))
+                f = "{}.mp4".format(timestamp.strftime("%Y%m%d-%H%M%S"))
+                self.keyClipSerivce.start(p,f, labels, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20)
 
         if updateConsecFrames:
             self.consecFrames += 1
@@ -87,6 +89,7 @@ class Video(object):
         if self.keyClipSerivce.recording and self.consecFrames == 32:
             print("finish")
             self.keyClipSerivce.finish()
+
 
 
         ret, jpg = cv2.imencode('.jpg', frame)
