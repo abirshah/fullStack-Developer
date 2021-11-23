@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 from cam_video_stream import CamVideoStream
-from Services.s3_service import S3Service;
+from Services.key_clip_service import KeyClipService
+import datetime
 
 class Video(object):
     def __init__(self, queueSize=128):
@@ -13,6 +14,8 @@ class Video(object):
         self.classes = []
         with open('names_files/mail-bird.names', 'r') as f:
             self.classes = [line.strip() for line in f.readlines()]
+        self.keyClipSerivce = KeyClipService(bufSize=32)
+        self.consecFrames = 0
 
     def __del__(self):
         self.video.stop()
@@ -21,6 +24,7 @@ class Video(object):
         frame = self.video.read()
         # resize the  image
         frame = cv2.resize(frame, (1280, 720))
+        updateConsecFrames = True
         # get the height and width
         height, width, _ = frame.shape
         blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
@@ -58,8 +62,9 @@ class Video(object):
 
         # generate different colors foreach bounding box
         colors = np.random.uniform(0, 255, size=(len(boxes), 3))
-
+        updateConsecFrames = len(indexes) <= 0
         if len(indexes) > 0:
+            print("Object has ben detected")
             for i in indexes.flatten():
                 x, y, w, h = boxes[i]
                 # Retrieving the class name
@@ -69,6 +74,20 @@ class Video(object):
                 # using OpenCV to write on the image.
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
                 cv2.putText(frame, label + " " + confidence, (x, y + 400), font, 2, color, 2)
+            self.consecFrames = 0
+            if not self.keyClipSerivce.recording:
+                timestamp = datetime.datetime.now()
+                p = "{}/{}.avi".format('tmp', timestamp.strftime("%Y%m%d-%H%M%S"))
+                f = "{}.avi".format(timestamp.strftime("%Y%m%d-%H%M%S"))
+                self.keyClipSerivce.start(p,f, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 20)
+
+        if updateConsecFrames:
+            self.consecFrames += 1
+        self.keyClipSerivce.update(frame)
+        if self.keyClipSerivce.recording and self.consecFrames == 32:
+            print("finish")
+            self.keyClipSerivce.finish()
+
 
         ret, jpg = cv2.imencode('.jpg', frame)
         return jpg.tobytes()

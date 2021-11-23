@@ -1,10 +1,19 @@
 from flask import Flask, render_template, Response
 from camera import Video
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 import os.path
 from Services.s3_service import S3Service
 
 app = Flask(__name__)
-
+basedir = os.path.abspath(os.path.dirname(__file__))
+#Database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:abir1971@pet-project.cqlvbpbplnsv.us-east-2.rds.amazonaws.com/automated_pet_door'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Init db
+db = SQLAlchemy(app)
+# Init ma
+ma = Marshmallow(app)
 
 @app.route('/')
 def index():
