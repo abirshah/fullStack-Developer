@@ -1,4 +1,6 @@
 import math
+import sys
+
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -140,6 +142,7 @@ def main():
     # colors = np.random.uniform(0, 255, size=(len(boxes), 3))
     if len(indexes) == 0:
         print("No object found")
+        sys.exit()
 
     for i in indexes.flatten():
         # w represents the width and h represents the height
