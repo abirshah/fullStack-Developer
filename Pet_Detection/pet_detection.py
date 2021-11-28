@@ -2,6 +2,15 @@ import cv2
 import numpy as np
 
 class petDetection:
+    def __init__(self):
+        self.bounding_box_size = dict()
+        self.proportion_of_boxes = dict()
+        self.distance_dictionary = dict()
+        self.font = cv2.FONT_HERSHEY_PLAIN
+        self.centroid_dictionary = dict()
+        self.ratio_dictionary = dict()
+
+
     # checks whether a bird or a person is detected
     def normallyDetected(self, classNames, classIds, indexes):
         for i in indexes.flatten():
@@ -9,46 +18,45 @@ class petDetection:
                 return False
         return True
 
-    def addingDistance(self, bbDictionary, className, distance):
-        if className in bbDictionary.keys():
-            bbDictionary[className].append(distance)
+    def addingDistance(self, className, distance):
+        if className in self.distance_dictionary.keys():
+            self.distance_dictionary[className].append(distance)
         else:
             list_size = [distance]
-            bbDictionary[className] = list_size
+            self.distance_dictionary[className] = list_size
 
     # Adds bounding box sizes to the dictionary
-    def gettingRatio(self, distance_dictionary, size_dictionary):
-        ratio_dictionary = {}
-        for distance_key in distance_dictionary:
-            if distance_key in size_dictionary:
-                average_size = (size_dictionary[distance_key][0] + size_dictionary[distance_key][1]) / 2
-                ratio = average_size / distance_dictionary[distance_key][0]
-                ratio_dictionary[distance_key] = ratio
-        return ratio_dictionary
+    def gettingRatio(self):
+        for distance_key in self.distance_dictionary:
+            if distance_key in self.bounding_box_size:
+                average_size = (self.bounding_box_size[distance_key][0] + self.bounding_box_size[distance_key][1]) / 2
+                ratio = average_size / self.distance_dictionary[distance_key][0]
+                self.ratio_dictionary[distance_key] = ratio
+        return self.ratio_dictionary
 
     # Adds bounding box sizes to the dictionary
-    def addingSizeOfBoundingBoxes(self, box_size_dictionary, class_name, size):
-        if class_name in box_size_dictionary.keys():
-            box_size_dictionary[class_name].append(size)
+    def addingSizeOfBoundingBoxes(self, class_name, size):
+        if class_name in self.bounding_box_size.keys():
+            self.bounding_box_size[class_name].append(size)
         else:
             list_size = [size]
-            box_size_dictionary[class_name] = list_size
+            self.bounding_box_size[class_name] = list_size
 
     # Adds bounding box sizes to the dictionary
-    def addingProportionsOfBoundingBoxes(self, box_proportions_dictionary, class_name, width, height):
-        if class_name in box_proportions_dictionary.keys():
-            box_proportions_dictionary[class_name].append([width, height])
+    def addingProportionsOfBoundingBoxes(self, class_name, width, height):
+        if class_name in self.proportion_of_boxes.keys():
+            self.proportion_of_boxes[class_name].append([width, height])
         else:
             list_size = [[width, height]]
-            box_proportions_dictionary[class_name] = list_size
+            self.proportion_of_boxes[class_name] = list_size
 
     # Adds centroids of each bounding box to the dictionary
-    def addingCentroid(self, centroid_dictionary, className, x, y):
-        if className in centroid_dictionary.keys():
-            centroid_dictionary[className].append([x, y])
+    def addingCentroid(self, className, x, y):
+        if className in self.centroid_dictionary.keys():
+            self.centroid_dictionary[className].append([x, y])
         else:
             list_size = [[x, y]]
-            centroid_dictionary[className] = list_size
+            self.centroid_dictionary[className] = list_size
 
     # Makes the list for bounding boxes, confidences and class ids detected.
     def getNumbers(self, net, width, height):
@@ -83,9 +91,9 @@ class petDetection:
             classes = [line.strip() for line in f.readlines()]
         return classes
 
-    def draw_bounding_boxes(self, boxes, index, classes, class_ids, confidences, my_img, font, color):
+    def draw_bounding_boxes(self, boxes, index, classes, class_ids, confidences, my_img, color):
         x, y, w, h = boxes[index]
         label = str(classes[class_ids[index]])
         confidence = str(round(confidences[index], 2))
         cv2.rectangle(my_img, (x, y), (x + w, y + h), color, 2)
-        cv2.putText(my_img, label + " " + confidence, (x, y + 20), font, 2, color, 2)
+        cv2.putText(my_img, label + " " + confidence, (x, y + 20), self.font, 2, color, 2)

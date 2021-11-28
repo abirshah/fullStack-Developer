@@ -9,14 +9,6 @@ import matplotlib.pyplot as plt
 # the main method
 def main():
     pd = petDetection()
-    # stores the area of each bounding box
-    bounding_box_size = {}
-    # stores the width and height of each bounding box
-    proportion_of_boxes = {}
-    distance_dictionary = {}
-    # Setting the font type
-    font = cv2.FONT_HERSHEY_PLAIN
-
     # network to coco weight file and cfg file
     net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
     # network to the mail packages and bird in the mouth custom yolov4 wight file and cfg file
@@ -57,7 +49,7 @@ def main():
     for i in indexes_coco.flatten():
         if str(coco_classes[class_ids_coco[i]]) == 'bird' or str(coco_classes[class_ids_coco[i]]) == 'person':
             pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
-                                   confidences=confidences_coco, my_img=my_img, font=font, color=(0, 0, 255))
+                                   confidences=confidences_coco, my_img=my_img, color=(0, 0, 255))
             print(str(coco_classes[class_ids_coco[i]]) + " found near by")
 
         if not len(indexes_mail_bird) == 0:
@@ -65,24 +57,22 @@ def main():
                 if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
                     pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                            class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
-                                           my_img=my_img,
-                                           font=font, color=(0, 0, 255))
+                                           my_img=my_img, color=(0, 0, 255))
                     print("Mail package found on the door")
                 elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(
                         coco_classes[class_ids_coco[i]]) == 'cat':
                     pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                            class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
-                                           my_img=my_img,
-                                           font=font, color=(0, 0, 255))
+                                           my_img=my_img, color=(0, 0, 255))
                     print('Bird found in the pets mouth')
 
         if str(coco_classes[class_ids_coco[i]]) == 'cat' or str(coco_classes[class_ids_coco[i]]) == 'dog':
             pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
-                                   confidences=confidences_coco, my_img=my_img, font=font, color=(0, 255, 0))
+                                   confidences=confidences_coco, my_img=my_img, color=(0, 255, 0))
             # This stores the sze of each bounding box into a dictionary
             x, y, w, h = boxes_coco[i]
-            pd.addingSizeOfBoundingBoxes(bounding_box_size, str(coco_classes[class_ids_coco[i]]), w * h)
-            pd.addingProportionsOfBoundingBoxes(proportion_of_boxes, str(coco_classes[class_ids_coco[i]]), w, h)
+            pd.addingSizeOfBoundingBoxes(str(coco_classes[class_ids_coco[i]]), w * h)
+            pd.addingProportionsOfBoundingBoxes(str(coco_classes[class_ids_coco[i]]), w, h)
             # prints whether a cat or dog was found
             print('Found to be a ', str(coco_classes[class_ids_coco[i]]))
 
@@ -98,43 +88,38 @@ def main():
             # To select random colors for each bounding box.
             colors = np.random.uniform(0, 255, size=(len(boxes_body_parts), 3))
             indexes_body_parts = cv2.dnn.NMSBoxes(boxes_body_parts, confidences_body_parts, .5, .4)
-            centroid_dict = dict()
             if len(indexes_body_parts) > 0:
                 for k in indexes_body_parts.flatten():
                     x, y, w, h = boxes_body_parts[k]
                     # This stores the size of each bounding box into a dictionary
-                    pd.addingSizeOfBoundingBoxes(bounding_box_size, str(body_parts_classes[class_ids_body_parts[k]]),
-                                                 w * h)
+                    pd.addingSizeOfBoundingBoxes(str(body_parts_classes[class_ids_body_parts[k]]), w * h)
                     # This stores the proportions of each bounding box into a dictionary
-                    pd.addingProportionsOfBoundingBoxes(proportion_of_boxes,
-                                                        str(body_parts_classes[class_ids_body_parts[k]]), w, h)
+                    pd.addingProportionsOfBoundingBoxes(str(body_parts_classes[class_ids_body_parts[k]]), w, h)
                     center_x = x + w / 2
                     center_y = y + h / 2
-                    pd.addingCentroid(centroid_dict, str(body_parts_classes[class_ids_body_parts[k]]), center_x,
-                                      center_y)
+                    pd.addingCentroid(str(body_parts_classes[class_ids_body_parts[k]]), center_x, center_y)
                     # prints all the body parts found in the console
                     print('it was a ', str(body_parts_classes[class_ids_body_parts[k]]))
                     color = colors[k]
                     pd.draw_bounding_boxes(boxes=boxes_body_parts, index=k, classes=body_parts_classes,
                                            class_ids=class_ids_body_parts, confidences=confidences_body_parts,
-                                           my_img=my_img,
-                                           font=font, color=color)
+                                           my_img=my_img, color=color)
 
-                for (class_name, center) in centroid_dict.items():
+                for (class_name, center) in pd.centroid_dictionary.items():
                     if len(center) == 2:
                         dx, dy = center[0][0] - center[1][0], center[0][1] - center[1][1]
                         distance = math.sqrt(dx * dx + dy * dy)
-                        pd.addingDistance(distance_dictionary, class_name, distance)
+                        pd.addingDistance(class_name, distance)
                         cv2.line(my_img, (int(center[0][0]), int(center[0][1])), (int(center[1][0]), int(center[1][1])),
                                  (255, 255, 255), thickness=2)
 
             else:
                 print("No body part was recognized by the model")
     # Displaying the image
-    print(bounding_box_size)
-    print(proportion_of_boxes)
-    print(distance_dictionary)
-    ratio_dictionary = pd.gettingRatio(distance_dictionary, bounding_box_size)
+    #print(bounding_box_size)
+    #print(proportion_of_boxes)
+    #print(distance_dictionary)
+    ratio_dictionary = pd.gettingRatio()
     print(ratio_dictionary)
     cv2.imshow('img', my_img)
     cv2.waitKey(0)
