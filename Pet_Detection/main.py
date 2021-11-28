@@ -116,9 +116,9 @@ def main():
             else:
                 print("No body part was recognized by the model")
     # Displaying the image
-    #print(bounding_box_size)
-    #print(proportion_of_boxes)
-    #print(distance_dictionary)
+    print(pd.bounding_box_size)
+    print(pd.proportion_of_boxes)
+    print(pd.distance_dictionary)
     ratio_dictionary = pd.gettingRatio()
     print(ratio_dictionary)
     cv2.imshow('img', my_img)
