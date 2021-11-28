@@ -1,9 +1,10 @@
 import math
+import os
 import sys
-
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+from WebService.Services.s3_service import S3Service
 
 
 # checks whether a bird or a person is detected
@@ -125,7 +126,6 @@ def main():
     # getting the height and width
     height, width, _ = my_img.shape
     blob = cv2.dnn.blobFromImage(my_img, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
-    blob.shape
 
     net.setInput(blob)
     net_mail_bird.setInput(blob)
