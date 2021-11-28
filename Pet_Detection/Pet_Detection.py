@@ -35,30 +35,30 @@ def gettingRatio(distance_dictionary, size_dictionary):
 
 
 # Adds bounding box sizes to the dictionary
-def addingSizeOfBoundingBoxes(bbDictionary, className, size):
-    if className in bbDictionary.keys():
-        bbDictionary[className].append(size)
+def addingSizeOfBoundingBoxes(box_size_dictionary, class_name, size):
+    if class_name in box_size_dictionary.keys():
+        box_size_dictionary[class_name].append(size)
     else:
         list_size = [size]
-        bbDictionary[className] = list_size
+        box_size_dictionary[class_name] = list_size
 
 
 # Adds bounding box sizes to the dictionary
-def addingProportionsOfBoundingBoxes(bbDictionary, className, width, height):
-    if className in bbDictionary.keys():
-        bbDictionary[className].append([width, height])
+def addingProportionsOfBoundingBoxes(box_proportions_dictionary, class_name, width, height):
+    if class_name in box_proportions_dictionary.keys():
+        box_proportions_dictionary[class_name].append([width, height])
     else:
         list_size = [[width, height]]
-        bbDictionary[className] = list_size
+        box_proportions_dictionary[class_name] = list_size
 
 
-# Adds bounding box sizes to the dictionary
-def addingCentroid(bbDictionary, className, x, y):
-    if className in bbDictionary.keys():
-        bbDictionary[className].append([x, y])
+# Adds centroids of each bounding box to the dictionary
+def addingCentroid(centroid_dictionary, className, x, y):
+    if className in centroid_dictionary.keys():
+        centroid_dictionary[className].append([x, y])
     else:
         list_size = [[x, y]]
-        bbDictionary[className] = list_size
+        centroid_dictionary[className] = list_size
 
 
 # Makes the list for bounding boxes, confidences and class ids detected.
@@ -107,15 +107,14 @@ def main():
     font = cv2.FONT_HERSHEY_PLAIN
 
     # network to coco weight file and cfg file
-    net = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
+    net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
     # network to the mail packages and bird in the mouth custom yolov4 wight file and cfg file
     net_mail_bird = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_mail_bird.cfg',
                                                'weight_files/yolov4-custom_bird_mail_new.weights')
 
-    # reading the coco.names, mail-bird.classes file. The coco model will help to detect dogs, cats, person or bird
-    classes = getClasses('names_files/coco.names')
-
-    # reading the mail-bird.names, mail-bird.classes file. The coco model will help to detect dogs, cats, person or bird
+    # reading the coco.names, mail-bird.names file. The coco model will help to detect dogs, cats, person or bird
+    coco_classes = getClasses('names_files/coco.names')
+    # reading the mail-bird.names, mail-bird.names file. The coco model will help to detect dogs, cats, person or bird
     mail_bird_classes = getClasses('names_files/mail-bird.names')
 
     # Reading the image you are testing
@@ -123,36 +122,36 @@ def main():
     my_img = cv2.resize(my_img, (800, 600))
 
     plt.imshow(my_img)
-    # getting the height and width
+    # getting the height and width of the image.
     height, width, _ = my_img.shape
     blob = cv2.dnn.blobFromImage(my_img, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
 
-    net.setInput(blob)
+    net_coco.setInput(blob)
     net_mail_bird.setInput(blob)
 
     # Getting the bonding boxes, confidence for each box, and class ids
-    boxes, confidences, class_ids = getNumbers(net, width, height)
+    boxes_coco, confidences_coco, class_ids_coco = getNumbers(net_coco, width, height)
     boxes_mail_bird, confidences_mail_bird, class_ids_mail_bird = getNumbers(net_mail_bird, width, height)
 
-    # indexes will be empty if there is no object detected in the image
-    indexes = cv2.dnn.NMSBoxes(boxes, confidences, .5, .4)
+    # indexes_coco will be empty if there is no objects are detected in the image
+    indexes_coco = cv2.dnn.NMSBoxes(boxes_coco, confidences_coco, .5, .4)
+    # indexes_mail_birds will be empty if there is no birds or mailing packages are detected in the image
     indexes_mail_bird = cv2.dnn.NMSBoxes(boxes_mail_bird, confidences_mail_bird, .5, .4)
 
-    # generate different colors foreach bounding box
-    # colors = np.random.uniform(0, 255, size=(len(boxes), 3))
-    if len(indexes) == 0:
+    # if no objects are found then terminate the code.
+    if len(indexes_coco) == 0:
         print("No object found")
         sys.exit()
 
-    for i in indexes.flatten():
+    for i in indexes_coco.flatten():
         # w represents the width and h represents the height
-        x, y, w, h = boxes[i]
-        if str(classes[class_ids[i]]) == 'bird' or str(classes[class_ids[i]]) == 'person':
-            parts_label = str(classes[class_ids[i]])
-            confidence = str(round(confidences[i], 2))
+        x, y, w, h = boxes_coco[i]
+        if str(coco_classes[class_ids_coco[i]]) == 'bird' or str(coco_classes[class_ids_coco[i]]) == 'person':
+            parts_label = str(coco_classes[class_ids_coco[i]])
+            confidence = str(round(confidences_coco[i], 2))
             cv2.rectangle(my_img, (x, y), (x + w, y + h), (0, 0, 255), 2)
             cv2.putText(my_img, parts_label + " " + confidence, (x, y + 20), font, 2, (0, 0, 255), 2)
-            print(str(classes[class_ids[i]]) + " found near by")
+            print(str(coco_classes[class_ids_coco[i]]) + " found near by")
 
         if not len(indexes_mail_bird) == 0:
             for j in indexes_mail_bird.flatten():
@@ -164,49 +163,49 @@ def main():
                     cv2.rectangle(my_img, (x2, y2), (x2 + w2, y2 + h2), (255, 255, 255), 2)
                     cv2.putText(my_img, label_mail + " " + confidence_mail, (x2, y2 + 20), font, 2, (0, 0, 255), 2)
                     print("Mail package found on the door")
-                elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(classes[class_ids[i]]) == 'cat':
+                elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(coco_classes[class_ids_coco[i]]) == 'cat':
                     label_bird = str(mail_bird_classes[class_ids_mail_bird[j]])
                     confidence_bird = str(round(confidences_mail_bird[j], 2))
                     cv2.rectangle(my_img, (x2, y2), (x2 + w2, y2 + h2), (0, 0, 255), 2)
                     cv2.putText(my_img, label_bird + " " + confidence_bird, (x2, y2 + 20), font, 2, (0, 0, 255), 2)
                     print('Bird found in the pets mouth')
 
-        if str(classes[class_ids[i]]) == 'cat' or str(classes[class_ids[i]]) == 'dog':
-            x, y, w, h = boxes[i]
-            parts_label = str(classes[class_ids[i]])
-            confidence = str(round(confidences[i], 2))
+        if str(coco_classes[class_ids_coco[i]]) == 'cat' or str(coco_classes[class_ids_coco[i]]) == 'dog':
+            x, y, w, h = boxes_coco[i]
+            parts_label = str(coco_classes[class_ids_coco[i]])
+            confidence = str(round(confidences_coco[i], 2))
             cv2.rectangle(my_img, (x, y), (x + w, y + h), (0,255,0), 2)
             cv2.putText(my_img, parts_label + " " + confidence, (x, y + 20), font, 2, (0, 0, 0), 2)
             # This stores the sze of each bounding box into a dictionary
-            addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[i]]), w * h)
-            addingProportionsOfBoundingBoxes(proportion_of_boxes, str(classes[class_ids[i]]), w, h)
+            addingSizeOfBoundingBoxes(bounding_box_size, str(coco_classes[class_ids_coco[i]]), w * h)
+            addingProportionsOfBoundingBoxes(proportion_of_boxes, str(coco_classes[class_ids_coco[i]]), w, h)
             # prints whether a cat or dog was found
-            print('Found to be a ', str(classes[class_ids[i]]))
-            net2 = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg', 'weight_files/yolov4-custom_10000.weights')
+            print('Found to be a ', str(coco_classes[class_ids_coco[i]]))
+            net_body_parts = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg', 'weight_files/yolov4-custom_10000.weights')
             # reading the classes.names file
-            classes = getClasses('names_files/classes.names')
+            body_parts_classes = getClasses('names_files/classes.names')
 
-            net2.setInput(blob)
-            boxes, confidences, class_ids = getNumbers(net2, width, height)
+            net_body_parts.setInput(blob)
+            boxes_body_parts, confidences_body_parts, class_ids_body_parts = getNumbers(net_body_parts, width, height)
 
             # To select random colors for each bounding box.
-            colors = np.random.uniform(0, 255, size=(len(boxes), 3))
-            indexes = cv2.dnn.NMSBoxes(boxes, confidences, .5, .4)
+            colors = np.random.uniform(0, 255, size=(len(boxes_body_parts), 3))
+            indexes_body_parts = cv2.dnn.NMSBoxes(boxes_body_parts, confidences_body_parts, .5, .4)
             centroid_dict = dict()
-            if len(indexes) > 0:
-                for k in indexes.flatten():
-                    x, y, w, h = boxes[k]
+            if len(indexes_body_parts) > 0:
+                for k in indexes_body_parts.flatten():
+                    x, y, w, h = boxes_body_parts[k]
                     # This stores the sze of each bounding box into a dictionary
-                    addingSizeOfBoundingBoxes(bounding_box_size, str(classes[class_ids[k]]), w * h)
-                    addingProportionsOfBoundingBoxes(proportion_of_boxes, str(classes[class_ids[k]]), w, h)
+                    addingSizeOfBoundingBoxes(bounding_box_size, str(body_parts_classes[class_ids_body_parts[k]]), w * h)
+                    addingProportionsOfBoundingBoxes(proportion_of_boxes, str(body_parts_classes[class_ids_body_parts[k]]), w, h)
                     center_x = x + w / 2
                     center_y = y + h / 2
-                    addingCentroid(centroid_dict, str(classes[class_ids[k]]), center_x, center_y)
+                    addingCentroid(centroid_dict, str(body_parts_classes[class_ids_body_parts[k]]), center_x, center_y)
                     # Retrieving the class name
-                    parts_label = str(classes[class_ids[k]])
+                    parts_label = str(body_parts_classes[class_ids_body_parts[k]])
                     # prints all the body parts found in the console
-                    print('it was a ', str(classes[class_ids[k]]))
-                    confidence = str(round(confidences[k], 2))
+                    print('it was a ', str(body_parts_classes[class_ids_body_parts[k]]))
+                    confidence = str(round(confidences_body_parts[k], 2))
                     color = colors[k]
                     # using OpenCV to write on the image.
                     # This puts a bounding box around each of the body part detected
