@@ -96,6 +96,13 @@ def getClasses(path):
     return classes
 
 
+def draw_bounding_boxes(boxes, index, classes, class_ids, confidences, my_img, font, color):
+    x, y, w, h = boxes[index]
+    label = str(classes[class_ids[index]])
+    confidence = str(round(confidences[index], 2))
+    cv2.rectangle(my_img, (x, y), (x + w, y + h), color, 2)
+    cv2.putText(my_img, label + " " + confidence, (x, y + 20), font, 2, color, 2)
+
 # the main method
 def main():
     # stores the area of each bounding box
@@ -144,43 +151,35 @@ def main():
         sys.exit()
 
     for i in indexes_coco.flatten():
-        # w represents the width and h represents the height
-        x, y, w, h = boxes_coco[i]
         if str(coco_classes[class_ids_coco[i]]) == 'bird' or str(coco_classes[class_ids_coco[i]]) == 'person':
-            parts_label = str(coco_classes[class_ids_coco[i]])
-            confidence = str(round(confidences_coco[i], 2))
-            cv2.rectangle(my_img, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            cv2.putText(my_img, parts_label + " " + confidence, (x, y + 20), font, 2, (0, 0, 255), 2)
+            draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
+                                confidences=confidences_coco, my_img=my_img, font=font, color=(0, 0, 255))
             print(str(coco_classes[class_ids_coco[i]]) + " found near by")
 
         if not len(indexes_mail_bird) == 0:
             for j in indexes_mail_bird.flatten():
                 # w2 represents the width and h2 represents the height
-                x2, y2, w2, h2 = boxes_mail_bird[j]
                 if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
-                    label_mail = str(mail_bird_classes[class_ids_mail_bird[j]])
-                    confidence_mail = str(round(confidences_mail_bird[j], 2))
-                    cv2.rectangle(my_img, (x2, y2), (x2 + w2, y2 + h2), (255, 255, 255), 2)
-                    cv2.putText(my_img, label_mail + " " + confidence_mail, (x2, y2 + 20), font, 2, (0, 0, 255), 2)
+                    draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
+                                        class_ids=class_ids_mail_bird, confidences=confidences_mail_bird, my_img=my_img,
+                                        font=font, color=(0, 0, 255))
                     print("Mail package found on the door")
                 elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(coco_classes[class_ids_coco[i]]) == 'cat':
-                    label_bird = str(mail_bird_classes[class_ids_mail_bird[j]])
-                    confidence_bird = str(round(confidences_mail_bird[j], 2))
-                    cv2.rectangle(my_img, (x2, y2), (x2 + w2, y2 + h2), (0, 0, 255), 2)
-                    cv2.putText(my_img, label_bird + " " + confidence_bird, (x2, y2 + 20), font, 2, (0, 0, 255), 2)
+                    draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
+                                        class_ids=class_ids_mail_bird, confidences=confidences_mail_bird, my_img=my_img,
+                                        font=font, color=(0, 0, 255))
                     print('Bird found in the pets mouth')
 
         if str(coco_classes[class_ids_coco[i]]) == 'cat' or str(coco_classes[class_ids_coco[i]]) == 'dog':
-            x, y, w, h = boxes_coco[i]
-            parts_label = str(coco_classes[class_ids_coco[i]])
-            confidence = str(round(confidences_coco[i], 2))
-            cv2.rectangle(my_img, (x, y), (x + w, y + h), (0,255,0), 2)
-            cv2.putText(my_img, parts_label + " " + confidence, (x, y + 20), font, 2, (0, 0, 0), 2)
+            draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
+                                confidences=confidences_coco, my_img=my_img, font=font, color=(0, 255, 0))
             # This stores the sze of each bounding box into a dictionary
+            x, y, w, h = boxes_coco[i]
             addingSizeOfBoundingBoxes(bounding_box_size, str(coco_classes[class_ids_coco[i]]), w * h)
             addingProportionsOfBoundingBoxes(proportion_of_boxes, str(coco_classes[class_ids_coco[i]]), w, h)
             # prints whether a cat or dog was found
             print('Found to be a ', str(coco_classes[class_ids_coco[i]]))
+
             net_body_parts = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg', 'weight_files/yolov4-custom_10000.weights')
             # reading the classes.names file
             body_parts_classes = getClasses('names_files/classes.names')
@@ -194,23 +193,21 @@ def main():
             centroid_dict = dict()
             if len(indexes_body_parts) > 0:
                 for k in indexes_body_parts.flatten():
+
                     x, y, w, h = boxes_body_parts[k]
-                    # This stores the sze of each bounding box into a dictionary
+                    # This stores the size of each bounding box into a dictionary
                     addingSizeOfBoundingBoxes(bounding_box_size, str(body_parts_classes[class_ids_body_parts[k]]), w * h)
+                    # This stores the proportions of each bounding box into a dictionary
                     addingProportionsOfBoundingBoxes(proportion_of_boxes, str(body_parts_classes[class_ids_body_parts[k]]), w, h)
                     center_x = x + w / 2
                     center_y = y + h / 2
                     addingCentroid(centroid_dict, str(body_parts_classes[class_ids_body_parts[k]]), center_x, center_y)
-                    # Retrieving the class name
-                    parts_label = str(body_parts_classes[class_ids_body_parts[k]])
                     # prints all the body parts found in the console
                     print('it was a ', str(body_parts_classes[class_ids_body_parts[k]]))
-                    confidence = str(round(confidences_body_parts[k], 2))
                     color = colors[k]
-                    # using OpenCV to write on the image.
-                    # This puts a bounding box around each of the body part detected
-                    cv2.rectangle(my_img, (x, y), (x + w, y + h), color, 2)
-                    cv2.putText(my_img, parts_label + " " + confidence, (x, y + 20), font, 2, (0, 0, 0), 2)
+                    draw_bounding_boxes(boxes=boxes_body_parts, index=k, classes=body_parts_classes,
+                                        class_ids=class_ids_body_parts, confidences=confidences_body_parts, my_img=my_img,
+                                        font=font, color=color)
 
                 for (class_name, center) in centroid_dict.items():
                     if len(center) == 2:
