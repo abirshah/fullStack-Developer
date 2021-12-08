@@ -31,7 +31,6 @@ def open_door():
     red_led.off()   #Delete when not in development mode
     
     
-    
 def record_video(time_of_video):
     blue_led.on()
     camera.start_recording("video" + time_of_video + video_format)
@@ -46,8 +45,13 @@ def capture_image(time_of_capture):
     blue_led.off()
 
 
+#def stream_video():
+    
+    
+# add exit if an key pressed
 def main():
     while True:
+        red_led.on()
         motion_detector.wait_for_motion() 
         timestamp = time.strftime("%y%b%d_%H:%M:%S")
         print("Motion Detector Triggered " + timestamp)
@@ -55,8 +59,16 @@ def main():
         capture_image(timestamp)
         record_video(timestamp)
         camera.stop_preview()
-        
+        red_led.off()
+     
+     
+def test_door():
+    print("Testing door")
+    print("Door access will be active for 10 seconds")
+    open_door()
+    
        
-print("Door Test")
-open_door()
+test_door()
 main()
+
+
