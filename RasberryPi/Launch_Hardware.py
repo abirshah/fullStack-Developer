@@ -13,6 +13,7 @@ timestamp = time.strftime("%y%b%d_%H:%M:%S")
 image_format = ".jpg"
 video_format = ".h264"
 print("System activated at " + timestamp)
+
 green_led.off()
 red_led.off() #Turn on when not in development mode
 blue_led.off()
