@@ -7,7 +7,7 @@ from botocore.exceptions import ClientError
 
 class S3Service:
     def __init__(self):
-        self.session = boto3.Session(profile_name='capstone')
+        self.session = boto3.Session()
         self.s3 = self.session.client('s3')
 
     def download_file(self, key, bucket, filename):
