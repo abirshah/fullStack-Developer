@@ -12,7 +12,7 @@ The blue light is turned on any time that the camera is activated.
 
 Please refer to the video at this link for a demo of the files in this folder.
 
-https://www.youtube.com/watch?v=Pl2zvEAlqzU&ab_channel=VivaFrei
+https://www.youtube.com/watch?v=Pl2zvEAlqzU
 
 The video demonstrates:
 
