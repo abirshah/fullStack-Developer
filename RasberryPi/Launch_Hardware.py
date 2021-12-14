@@ -1,6 +1,8 @@
 from gpiozero import LED, Button, MotionSensor
 from picamera import PiCamera
 import time
+import sys
+import io
 
 
 green_led = LED(4)
@@ -45,7 +47,22 @@ def capture_image(time_of_capture):
     blue_led.off()
 
 
-#def stream_video():
+def exit_sequence():
+    print("Exiting program")
+    sys.exit()
+    
+    
+# with pynput.keyboard.Listener(on_press = exit_sequence) as listener:
+#     listener.join
+    
+def stream_video():
+    print("camera streaming for 6 seconds")
+    stream = io.BytesIO()
+    blue_led.on()
+    camera.start_recording(stream, format = "h264", quality = 20)
+    camera.wait_recording(6)
+    camera.stop_recording()
+    blue_led.off()
     
     
 # add exit if an key pressed
@@ -67,8 +84,14 @@ def test_door():
     print("Door access will be active for 10 seconds")
     open_door()
     
-       
-test_door()
+
+def test_stream_video():
+    print("Testing video stream")
+    stream_video()
+    
+
+# test_door()
+test_stream_video()
 main()
 
 
