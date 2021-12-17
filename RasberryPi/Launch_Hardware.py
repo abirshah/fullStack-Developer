@@ -2,7 +2,6 @@ from gpiozero import LED, Button, MotionSensor
 from picamera import PiCamera
 import time
 import sys
-import io
 
 
 green_led = LED(4)
@@ -59,10 +58,7 @@ def exit_sequence():
     print("Exiting program")
     sys.exit()
     
-    
-# with pynput.keyboard.Listener(on_press = exit_sequence) as listener:
-#     listener.join
-    
+
 def stream_video():
     print("camera streaming for 6 seconds")
     stream = io.BytesIO()
@@ -73,7 +69,7 @@ def stream_video():
     blue_led.off()
     
     
-# add exit if an key pressed
+# add exit if any key is pressed
 def main():
     while True:
         red_led.on()
