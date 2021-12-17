@@ -3,10 +3,13 @@ import numpy as np
 from cam_video_stream import CamVideoStream
 from key_clip_service import KeyClipService
 import datetime
+import time
 
 class Video(object):
     def __init__(self, queueSize=128):
-        self.video = CamVideoStream(src=0).start()
+        self.video = CamVideoStream(src=0)
+        time.sleep(3)
+        self.video.start()
         # network to custom weight file and cfg file
         self.net = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_mail_bird.cfg',
                                               'weight_files/yolov4-custom_bird_mail_new.weights')
