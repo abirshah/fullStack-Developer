@@ -33,6 +33,14 @@ def open_door():
     red_led.off()   #Delete when not in development mode
     
     
+def sense_motion():
+    while True:
+        motion_detector.wait_for_motion() 
+        timestamp = time.strftime("%y%b%d_%H:%M:%S")
+        print("Motion Detector Triggered " + timestamp)
+        return True
+    
+    
 def record_video(time_of_video):
     blue_led.on()
     camera.start_recording("video" + time_of_video + video_format)
@@ -79,6 +87,13 @@ def main():
         red_led.off()
      
      
+def test_sense_motion():
+    print("Testing motion detection")
+    print("Waiting for Motion..")
+    if (sense_motion()):
+        print("Motion detected")
+
+
 def test_door():
     print("Testing door")
     print("Door access will be active for 10 seconds")
@@ -90,8 +105,9 @@ def test_stream_video():
     stream_video()
     
 
+# test_sense_motion()
 # test_door()
-test_stream_video()
+# test_stream_video()
 main()
 
 
