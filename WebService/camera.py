@@ -4,19 +4,20 @@ from cam_video_stream import CamVideoStream
 from key_clip_service import KeyClipService
 import datetime
 import time
+import math
+from pet_detection import petDetection
+
 
 class Video(object):
     def __init__(self, queueSize=128):
         self.video = CamVideoStream(src=0)
         time.sleep(3)
         self.video.start()
-        # network to custom weight file and cfg file
-        self.net = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_mail_bird.cfg',
-                                              'weight_files/yolov4-custom_bird_mail_new.weights')
-        # reading the classes.names file
-        self.classes = []
-        with open('names_files/mail-bird.names', 'r') as f:
-            self.classes = [line.strip() for line in f.readlines()]
+        # network to coco weight file and cfg file
+        self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
+        # network to the mail packages and bird in the mouth custom yolov4 wight file and cfg file
+        self.net_mail_bird = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_mail_bird.cfg',
+                                                   'weight_files/yolov4-custom_bird_mail_new.weights')
         self.keyClipSerivce = KeyClipService(bufSize=32)
         self.consecFrames = 0
 
@@ -27,64 +28,111 @@ class Video(object):
         frame = self.video.read()
         # resize the  image
         frame = cv2.resize(frame, (1280, 720))
+        pd = petDetection()
         updateConsecFrames = True
+
+        # reading the coco.names, mail-bird.names file. The coco model will help to detect dogs, cats, person or bird
+        coco_classes = pd.getClasses('names_files/coco.names')
+        # reading the mail-bird.names, mail-bird.names file. The coco model will help to detect dogs, cats, person or bird
+        mail_bird_classes = pd.getClasses('names_files/mail-bird.names')
+
         # get the height and width
         height, width, _ = frame.shape
         blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
-        self.net.setInput(blob)
-        output_layers_name = self.net.getUnconnectedOutLayersNames()
-        layerOutputs = self.net.forward(output_layers_name)
 
-        # Getting the bounding boxes, confidence for each box and class ids
-        boxes = []
-        confidences = []
-        class_ids = []
+        #self.net.setInput(blob)
+        self.net_coco.setInput(blob)
+        self.net_mail_bird.setInput(blob)
 
-        for output in layerOutputs:
-            for detection in output:
-                score = detection[5:]
-                # retrieve the class id
-                class_id = np.argmax(score)
-                # retrieve the confidence
-                confidence = score[class_id]
-                # check whether the confidence is above 70 percent
-                if confidence > 0.7:
-                    center_x = int(detection[0] * width)
-                    center_y = int(detection[1] * height)
-                    w = int(detection[2] * width)
-                    h = int(detection[3] * height)
-                    x = int(center_x - w / 2)
-                    y = int(center_y - h / 2)
-                    # append the coordinates of the bounding box
-                    boxes.append([x, y, w, h])
-                    confidences.append((float(confidence)))
-                    class_ids.append(class_id)
-        # indexes will be empty if there is no objext detected in the image)
-        indexes = cv2.dnn.NMSBoxes(boxes, confidences, .8, .4)
-        font = cv2.FONT_HERSHEY_PLAIN
+        # Getting the bonding boxes, confidence for each box, and class ids
+        boxes_coco, confidences_coco, class_ids_coco = pd.getNumbers(self.net_coco, width, height)
+        boxes_mail_bird, confidences_mail_bird, class_ids_mail_bird = pd.getNumbers(self.net_mail_bird, width, height)
 
-        # generate different colors foreach bounding box
-        colors = np.random.uniform(0, 255, size=(len(boxes), 3))
-        updateConsecFrames = len(indexes) <= 0
-        if len(indexes) > 0:
-            labels = []
-            print("Object has ben detected")
-            for i in indexes.flatten():
-                x, y, w, h = boxes[i]
-                # Retrieving the class name
-                label = str(self.classes[class_ids[i]])
-                labels.append(label)
-                confidence = str(round(confidences[i], 2))
-                color = colors[i]
-                # using OpenCV to write on the image.
-                cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-                cv2.putText(frame, label + " " + confidence, (x, y + 400), font, 2, color, 2)
+        # indexes_coco will be empty if there is no objects are detected in the image
+        indexes_coco = cv2.dnn.NMSBoxes(boxes_coco, confidences_coco, .5, .4)
+        # indexes_mail_birds will be empty if there is no birds or mailing packages are detected in the image
+        indexes_mail_bird = cv2.dnn.NMSBoxes(boxes_mail_bird, confidences_mail_bird, .5, .4)
+
+        updateConsecFrames = len(indexes_coco) <= 0
+
+        if len(indexes_coco) > 0:
+            print("Object has been detected")
+            for i in indexes_coco.flatten():
+                if str(coco_classes[class_ids_coco[i]]) == 'bird' or str(coco_classes[class_ids_coco[i]]) == 'person':
+                    pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
+                                           confidences=confidences_coco, my_img=frame, color=(0, 0, 255))
+                    print(str(coco_classes[class_ids_coco[i]]) + " found near by")
+
+                if not len(indexes_mail_bird) == 0:
+                    for j in indexes_mail_bird.flatten():
+                        if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
+                            pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
+                                                   class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
+                                                   my_img=frame, color=(0, 0, 255))
+                            print("Mail package found on the door")
+                        elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(
+                                coco_classes[class_ids_coco[i]]) == 'cat':
+                            pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
+                                                   class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
+                                                   my_img=frame, color=(0, 0, 255))
+                            print('Bird found in the pets mouth')
+
+                if str(coco_classes[class_ids_coco[i]]) == 'cat' or str(coco_classes[class_ids_coco[i]]) == 'dog':
+                    pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
+                                           confidences=confidences_coco, my_img=frame, color=(0, 255, 0))
+                    # This stores the sze of each bounding box into a dictionary
+                    x, y, w, h = boxes_coco[i]
+                    pd.addingSizeOfBoundingBoxes(str(coco_classes[class_ids_coco[i]]), w * h)
+                    pd.addingProportionsOfBoundingBoxes(str(coco_classes[class_ids_coco[i]]), w, h)
+                    # prints whether a cat or dog was found
+                    print('Found to be a ', str(coco_classes[class_ids_coco[i]]))
+
+                    net_body_parts = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg',
+                                                                'weight_files/yolov4-custom_10000.weights')
+                    # reading the classes.names file
+                    body_parts_classes = pd.getClasses('names_files/classes.names')
+
+                    net_body_parts.setInput(blob)
+                    boxes_body_parts, confidences_body_parts, class_ids_body_parts = pd.getNumbers(net_body_parts,
+                                                                                                   width, height)
+
+                    # To select random colors for each bounding box.
+                    colors = np.random.uniform(0, 255, size=(len(boxes_body_parts), 3))
+                    indexes_body_parts = cv2.dnn.NMSBoxes(boxes_body_parts, confidences_body_parts, .5, .4)
+                    if len(indexes_body_parts) > 0:
+                        for k in indexes_body_parts.flatten():
+                            x, y, w, h = boxes_body_parts[k]
+                            # This stores the size of each bounding box into a dictionary
+                            pd.addingSizeOfBoundingBoxes(str(body_parts_classes[class_ids_body_parts[k]]), w * h)
+                            # This stores the proportions of each bounding box into a dictionary
+                            pd.addingProportionsOfBoundingBoxes(str(body_parts_classes[class_ids_body_parts[k]]), w, h)
+                            center_x = x + w / 2
+                            center_y = y + h / 2
+                            pd.addingCentroid(str(body_parts_classes[class_ids_body_parts[k]]), center_x, center_y)
+                            # prints all the body parts found in the console
+                            print('it was a ', str(body_parts_classes[class_ids_body_parts[k]]))
+                            color = colors[k]
+                            pd.draw_bounding_boxes(boxes=boxes_body_parts, index=k, classes=body_parts_classes,
+                                                   class_ids=class_ids_body_parts, confidences=confidences_body_parts,
+                                                   my_img=frame, color=color)
+
+                        for (class_name, center) in pd.centroid_dictionary.items():
+                            if len(center) == 2:
+                                dx, dy = center[0][0] - center[1][0], center[0][1] - center[1][1]
+                                distance = math.sqrt(dx * dx + dy * dy)
+                                pd.addingDistance(class_name, distance)
+                                cv2.line(frame, (int(center[0][0]), int(center[0][1])),
+                                         (int(center[1][0]), int(center[1][1])),
+                                         (255, 255, 255), thickness=2)
+                    else:
+                        print("No body part was recognized by the model")
+
             self.consecFrames = 0
             if not self.keyClipSerivce.recording:
                 timestamp = datetime.datetime.now()
                 p = "{}/{}.mp4".format('tmp', timestamp.strftime("%Y%m%d-%H%M%S"))
                 f = "{}.mp4".format(timestamp.strftime("%Y%m%d-%H%M%S"))
-                self.keyClipSerivce.start(p,f, labels, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20)
+                self.keyClipSerivce.start(p, f, coco_classes, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20)
 
         if updateConsecFrames:
             self.consecFrames += 1
@@ -92,8 +140,6 @@ class Video(object):
         if self.keyClipSerivce.recording and self.consecFrames == 32:
             print("finish")
             self.keyClipSerivce.finish()
-
-
 
         ret, jpg = cv2.imencode('.jpg', frame)
         return jpg.tobytes()

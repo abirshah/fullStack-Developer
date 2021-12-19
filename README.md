@@ -31,6 +31,8 @@ Features of the Automated System are:
 
 ## Technologies
 Autometed Pet Door System is created using following thechnologies and tools:
+- [RasberryPI](https://www.raspberrypi.org/) 
+  <dd>RasberryPI (Model B) is a small, low cost computer, that runs linux and supports GPIO (General Purpose Input/Output) connections, in order to interface with other physical objects</dd>
 - [Python](https://www.python.org/) 
   <dd> Python is powerful programming language which can be used building various robust application.
   It is number one choice for developer application like Machine Learning because python offers various 
@@ -48,5 +50,6 @@ The project architure will depend on the architecture of the various libraries o
 2. Install [Anaconda](https://www.anaconda.com/products/individual-d)
 3. Install [Pip](https://anaconda.org/anaconda/pip)
 4. Install [Pycharm](https://www.jetbrains.com/pycharm/download/#section=windows)
-5. Instal  numpy  adding
+5. Install numpy  adding
+6. Install pynput
 

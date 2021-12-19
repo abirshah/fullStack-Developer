@@ -2,6 +2,7 @@ import datetime
 
 from .shared import db, ma
 
+
 class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     classes = db.Column(db.String(100))
