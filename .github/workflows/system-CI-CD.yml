@@ -4,8 +4,10 @@
 name: Python application
 
 on:
+  push:
+    branches: [develop]
   pull_request:
-    branches: [ develop ]
+    branches: [develop]
 
 jobs:
   build:
