@@ -16,6 +16,7 @@ jobs:
     #  run:
     #    working-directory: pet-detection-client
     steps:
+    - uses: actions/checkout@v2
     - run: echo $PWD
     - name: Set Node.js 12.x
       uses: actions/setup-node@v2
