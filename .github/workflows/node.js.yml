@@ -27,4 +27,3 @@ jobs:
       run: |
         npm ci
         npm build --if-present
-        npm test --passWithNoTests
