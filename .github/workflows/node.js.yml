@@ -12,9 +12,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: pet-detection-client
+    #defaults:
+    #  run:
+    #    working-directory: pet-detection-client
     steps:
     - run: echo $PWD
     - name: Set Node.js 12.x
