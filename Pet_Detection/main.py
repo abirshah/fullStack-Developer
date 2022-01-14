@@ -21,7 +21,7 @@ def main():
     mail_bird_classes = pd.getClasses('names_files/mail-bird.names')
 
     # Reading the image you are testing
-    my_img = cv2.imread('test_images/cat_mail.jpg')
+    my_img = cv2.imread('test_images/cat.jpg')
     my_img = cv2.resize(my_img, (800, 600))
 
     plt.imshow(my_img)
