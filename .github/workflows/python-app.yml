@@ -14,15 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install Python dependencies
+      uses: py-actions/py-dependency-install@v3
+      with:
+        path: "./fullStack-Developer/requirements.txt"
     - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
         python-version: "3.10"
     - run: echo $pwd
-    - name: Install Python dependencies
-      uses: py-actions/py-dependency-install@v3
-      with:
-        path: "./fullStack-Developer/requirements.txt"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
