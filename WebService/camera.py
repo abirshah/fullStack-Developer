@@ -132,7 +132,7 @@ class Video(object):
                 timestamp = datetime.datetime.now()
                 p = "{}/{}.mp4".format('tmp', timestamp.strftime("%Y%m%d-%H%M%S"))
                 f = "{}.mp4".format(timestamp.strftime("%Y%m%d-%H%M%S"))
-                self.keyClipSerivce.start(p, f, labels, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20)
+                self.keyClipSerivce.start(p, f, labels, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20, width, height)
 
         if updateConsecFrames:
             self.consecFrames += 1
