@@ -27,3 +27,4 @@ WebService/env
 WebService/weight_files/*
 WebService/tmp/*
 
+*.weights
