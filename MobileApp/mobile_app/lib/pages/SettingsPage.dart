@@ -5,7 +5,7 @@ import 'package:mobile_app/model/dto/Admin.dart';
 import 'package:mobile_app/pages/ToggleButton.dart';
 import 'package:mobile_app/router.dart';
 
-class MainMenu extends StatelessWidget {
+class SettingsPage extends StatelessWidget {
   String title = "";
 
   MainMenu() {
@@ -28,21 +28,11 @@ class MainMenu extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
 
-            if(ServerGateway.instance().signedInUser is Admin)
-              createRoundedCornerRaisedButton("Settings" ,onPress:  (){ goToPage(context, SettingsPagePath);},minWidth: 100,height: 50),
-
-            createRoundedCornerRaisedButton("Live Camera",onPress: (){print("live camera");},minWidth: 100,height: 50),
+            createRoundedCornerRaisedButton("Add User" ,onPress:  (){ print("settings");},minWidth: 100,height: 50),
+            createRoundedCornerRaisedButton("Edit",onPress: (){print("live camera");},minWidth: 100,height: 50),
         ],),
 
-        createRoundedCornerRaisedButton("Captured Images",onPress: (){},minWidth: 100,height: 50),
-        createRoundedCornerRaisedButton("Captured Videos",onPress: (){},minWidth: 100,height: 50),
-        createRoundedCornerRaisedButton("Add Pet",onPress: (){},minWidth: 100,height: 50),
-        createRoundedCornerRaisedButton("Notifications",onPress: (){},minWidth: 100,height: 50),
-        createRoundedCornerRaisedButton("Access Information",onPress: (){},minWidth: 100,height: 50),
-        createRoundedCornerRaisedButton("Logout",onPress: ()async{
-          await ServerGateway.instance().logout();
-          wipeAllPagesAndGoTo(context,LoginPagePath);
-        },minWidth: 100,height: 50),
+        createRoundedCornerRaisedButton("Delete User",onPress: (){},minWidth: 100,height: 50),
       ],
     );
   }

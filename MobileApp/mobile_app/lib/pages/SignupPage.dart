@@ -3,15 +3,15 @@ import 'package:flutter_general/TextFields.dart';
 import 'package:flutter_general/Toast.dart';
 import 'package:mobile_app/Util.dart';
 import 'package:mobile_app/model/ServerGateway.dart';
-import 'package:mobile_app/model/exception/PasswordDoesNotMatch.dart';
+import 'package:mobile_app/model/exception/UserIdAlreadyTaken.dart';
 import 'package:mobile_app/model/exception/UserWithIdDoesNotExist.dart';
-import 'package:mobile_app/pages/SignupPage.dart';
 import 'package:mobile_app/router.dart';
 
-class LoginPage extends StatelessWidget {
+class SignupPage extends StatelessWidget {
 
   String userId = "";
   String password = "";
+  String email = "";
 
   build(context) {
     return Scaffold(
@@ -19,45 +19,33 @@ class LoginPage extends StatelessWidget {
       body: Column(
         children: [
           Spacer(flex: 2),
-          Text("Automated Pet Door", style: TextStyle(fontSize: 20),),
+          halveticaBoldText("Please Register ...",fontSize: 30),
           SizedBox(height: 20,),
-          Text("XGaurd"),
+          Spacer(flex: 1),
+          FancyTextField(title: "Email",onValueChanged: (value){email = value;},),
           Spacer(flex: 1),
           FancyTextField(title: "User Id",onValueChanged: (value){userId = value;},),
           Spacer(flex: 1),
           FancyTextField(title: "Password",onValueChanged: (value){password = value;},),
           Spacer(flex: 1),
-          createRoundedCornerRaisedButton("Login", onPress: () {
+          createRoundedCornerRaisedButton("Register", onPress: () {
 
-            if(userId=="")
-              {
-                toast("user id cannot be empty", context);
-                return;
-              }
-
-            Future<void> result = ServerGateway.instance().signIn(userId, password);
+            Future<void> result = ServerGateway.instance().signup(email,userId, password);
             result.then((value) {
-              wipeAllPagesAndGoTo(context, MainMenuPagePath);
+              wipeAllPagesAndGoTo(context, LoginPagePath);
             });
 
             result.onError((error, stackTrace)  {
 
-              if(error is UserWithIdDoesNotExist)
-                toast("user with id $userId does not exist!",context);
-              else if(error is PasswordDoesNotMatch)
-                toast("wrong password!!!",context);
+              if(error is UserIdAlreadyTaken)
+                toast("user with id $userId already exist!",context);
               else
                 toast("failed with unknown reason!", context);
             });
 
           },minWidth: 100),
 
-          Spacer(flex: 1),
-          Text("Don't Have Account ?"),
-          Spacer(flex: 1),
-          createRoundedCornerRaisedButton("Register", onPress: () {
-            goToPage(context, SignUpPagePath);
-          },minWidth: 100),
+
           Spacer(flex: 2),
         ],
       ),
