@@ -11,11 +11,11 @@ from pet_detection import petDetection
 class Video(object):
     def __init__(self, queueSize=128):
         self.video = CamVideoStream(src=0)
-        time.sleep(3)
+        time.sleep(10)
         self.video.start()
         # network to coco weight file and cfg file
         self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
-        # network to the mail packages and bird in the mouth custom yolov4 wight file and cfg file
+        # network to the mail packagesand bird in the mouth custom yolov4 wight file and cfg file
         self.net_mail_bird = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_mail_bird.cfg',
                                                    'weight_files/yolov4-custom_bird_mail_new.weights')
         self.keyClipSerivce = KeyClipService(bufSize=32)
@@ -54,13 +54,13 @@ class Video(object):
         indexes_mail_bird = cv2.dnn.NMSBoxes(boxes_mail_bird, confidences_mail_bird, .5, .4)
 
         updateConsecFrames = len(indexes_coco) <= 0
-
+        labels = []
         if len(indexes_coco) > 0:
             print("Object has been detected")
             for i in indexes_coco.flatten():
                 if str(coco_classes[class_ids_coco[i]]) == 'bird' or str(coco_classes[class_ids_coco[i]]) == 'person':
                     pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
-                                           confidences=confidences_coco, my_img=frame, color=(0, 0, 255))
+                                           confidences=confidences_coco, my_img=frame, color=(0, 0, 255), labels=labels)
                     print(str(coco_classes[class_ids_coco[i]]) + " found near by")
 
                 if not len(indexes_mail_bird) == 0:
@@ -68,18 +68,18 @@ class Video(object):
                         if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
                             pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                                    class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
-                                                   my_img=frame, color=(0, 0, 255))
+                                                   my_img=frame, color=(0, 0, 255), labels=labels)
                             print("Mail package found on the door")
                         elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(
                                 coco_classes[class_ids_coco[i]]) == 'cat':
                             pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                                    class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
-                                                   my_img=frame, color=(0, 0, 255))
+                                                   my_img=frame, color=(0, 0, 255), labels=labels)
                             print('Bird found in the pets mouth')
 
                 if str(coco_classes[class_ids_coco[i]]) == 'cat' or str(coco_classes[class_ids_coco[i]]) == 'dog':
                     pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
-                                           confidences=confidences_coco, my_img=frame, color=(0, 255, 0))
+                                           confidences=confidences_coco, my_img=frame, color=(0, 255, 0), labels=labels)
                     # This stores the sze of each bounding box into a dictionary
                     x, y, w, h = boxes_coco[i]
                     pd.addingSizeOfBoundingBoxes(str(coco_classes[class_ids_coco[i]]), w * h)
@@ -114,7 +114,7 @@ class Video(object):
                             color = colors[k]
                             pd.draw_bounding_boxes(boxes=boxes_body_parts, index=k, classes=body_parts_classes,
                                                    class_ids=class_ids_body_parts, confidences=confidences_body_parts,
-                                                   my_img=frame, color=color)
+                                                   my_img=frame, color=color, labels=labels)
 
                         for (class_name, center) in pd.centroid_dictionary.items():
                             if len(center) == 2:
@@ -132,7 +132,7 @@ class Video(object):
                 timestamp = datetime.datetime.now()
                 p = "{}/{}.mp4".format('tmp', timestamp.strftime("%Y%m%d-%H%M%S"))
                 f = "{}.mp4".format(timestamp.strftime("%Y%m%d-%H%M%S"))
-                self.keyClipSerivce.start(p, f, coco_classes, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20)
+                self.keyClipSerivce.start(p, f, labels, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20, width, height)
 
         if updateConsecFrames:
             self.consecFrames += 1

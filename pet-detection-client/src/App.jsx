@@ -46,7 +46,7 @@ const  App = () => {
             mode: 'dark',
         },
     });
-    const LIVE_STREAM_URL = "http://localhost:5000/video";
+    const LIVE_STREAM_URL = "http://127.0.0.1:5000/video";
     const [videoSource, setVideoSource] = useState(LIVE_STREAM_URL);
     const [watchingStream, setWatchingStream] = useState(true);
     const [events, setEvents] = useState([]);

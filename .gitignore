@@ -26,4 +26,5 @@ hs_err_pid*
 WebService/env
 WebService/weight_files/*
 WebService/tmp/*
-
+WebService/__pycache__/*
+*.weights
