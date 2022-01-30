@@ -33,13 +33,14 @@ class KeyClipService:
         )
 
 
-    def start(self, outputPath, outputFile, labels, fourcc, fps):
+    def start(self, outputPath, outputFile, labels, fourcc, fps, width, height):
         self.recording = True
         self.outputPath = outputPath
         self.outputFile = outputFile
         self.labels = labels
+        print(self.frames)
         self.writer = cv2.VideoWriter(outputPath, fourcc, fps,
-                                      (self.frames[0].shape[1], self.frames[0].shape[0]), True)
+                                      (width, height), True)
         self.Q = Queue()
         for i in range(len(self.frames), 0, -1):
             self.Q.put(self.frames[i - 1])
