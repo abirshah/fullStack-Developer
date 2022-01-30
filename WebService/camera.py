@@ -9,7 +9,7 @@ from pet_detection import petDetection
 
 
 class Video(object):
-    def __init__(self, queueSize=128):
+    def __init__(self, queueSize=128, cameraSource=0):
         self.video = CamVideoStream(src=0)
         time.sleep(10)
         self.video.start()
