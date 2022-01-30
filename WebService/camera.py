@@ -9,9 +9,9 @@ from pet_detection import petDetection
 
 
 class Video(object):
-    def __init__(self, queueSize=128, cameraSource=0):
-        self.video = CamVideoStream(src=0)
-        time.sleep(10)
+    def __init__(self, queueSize=128, cameraSource=0, timeout=10):
+        self.video = CamVideoStream(src=cameraSource)
+        time.sleep(timeout)
         self.video.start()
         # network to coco weight file and cfg file
         self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
@@ -56,7 +56,6 @@ class Video(object):
         updateConsecFrames = len(indexes_coco) <= 0
         labels = []
         if len(indexes_coco) > 0:
-            print("Object has been detected")
             for i in indexes_coco.flatten():
                 if str(coco_classes[class_ids_coco[i]]) == 'bird' or str(coco_classes[class_ids_coco[i]]) == 'person':
                     pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
@@ -69,13 +68,11 @@ class Video(object):
                             pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                                    class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
                                                    my_img=frame, color=(0, 0, 255), labels=labels)
-                            print("Mail package found on the door")
                         elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(
                                 coco_classes[class_ids_coco[i]]) == 'cat':
                             pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                                    class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
                                                    my_img=frame, color=(0, 0, 255), labels=labels)
-                            print('Bird found in the pets mouth')
 
                 if str(coco_classes[class_ids_coco[i]]) == 'cat' or str(coco_classes[class_ids_coco[i]]) == 'dog':
                     pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
@@ -84,8 +81,6 @@ class Video(object):
                     x, y, w, h = boxes_coco[i]
                     pd.addingSizeOfBoundingBoxes(str(coco_classes[class_ids_coco[i]]), w * h)
                     pd.addingProportionsOfBoundingBoxes(str(coco_classes[class_ids_coco[i]]), w, h)
-                    # prints whether a cat or dog was found
-                    print('Found to be a ', str(coco_classes[class_ids_coco[i]]))
 
                     net_body_parts = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg',
                                                                 'weight_files/yolov4-custom_10000.weights')
@@ -109,8 +104,6 @@ class Video(object):
                             center_x = x + w / 2
                             center_y = y + h / 2
                             pd.addingCentroid(str(body_parts_classes[class_ids_body_parts[k]]), center_x, center_y)
-                            # prints all the body parts found in the console
-                            print('it was a ', str(body_parts_classes[class_ids_body_parts[k]]))
                             color = colors[k]
                             pd.draw_bounding_boxes(boxes=boxes_body_parts, index=k, classes=body_parts_classes,
                                                    class_ids=class_ids_body_parts, confidences=confidences_body_parts,
@@ -138,8 +131,10 @@ class Video(object):
             self.consecFrames += 1
         self.keyClipSerivce.update(frame)
         if self.keyClipSerivce.recording and self.consecFrames == 32:
-            print("finish")
             self.keyClipSerivce.finish()
 
         ret, jpg = cv2.imencode('.jpg', frame)
-        return jpg.tobytes()
+        return {
+            'frame': jpg.tobytes,
+            'labels': labels
+        }

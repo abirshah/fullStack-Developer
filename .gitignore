@@ -27,4 +27,6 @@ WebService/env
 WebService/weight_files/*
 WebService/tmp/*
 WebService/__pycache__/*
+WebService/htmlcov
+WebService/.coverage
 *.weights

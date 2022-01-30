@@ -4,6 +4,7 @@ import json
 from Models.events import Events, EventsSchema
 from app import create_app
 from Models.shared import db
+from camera import Video
 
 class FlaskTest(flask_unittest.ClientTestCase):
     # Assign the flask app object
@@ -68,6 +69,43 @@ class FlaskTest(flask_unittest.ClientTestCase):
                 for e in json_response
             )
         )
+
+    # Provided a video of a cat, the Video class should be able to detect a cat
+    def test_detect_cat(self, client):
+        camera = Video(cameraSource="test_videos/cat.mp4", timeout=0)
+        response = camera.get_frame()
+        labels = response['labels']
+        self.assertTrue('cat' in labels)
+        self.assertTrue('cat_mouth' in labels)
+        self.assertTrue('cat_eye' in labels)
+        self.assertTrue('cat_nose' in labels)
+
+    # Provided a video of a mailing package, the Video class should detect a package, person, but not cats
+    def test_detect_package(self, client):
+        camera = Video(cameraSource="test_videos/package.mp4", timeout=0)
+        response = camera.get_frame()
+        labels = response['labels']
+        self.assertTrue('mailing_package' in labels)
+        self.assertTrue('person' in labels)
+        self.assertFalse('cat' in labels)
+        self.assertFalse('cat_mouth' in labels)
+        self.assertFalse('cat_eye' in labels)
+        self.assertFalse('cat_nose' in labels)
+
+    # Provided a video with no objects of interest, the Video class should not detect any objects
+    def test_detect_no_objects(self, client):
+        camera = Video(cameraSource="test_videos/no_objects.mp4", timeout=0)
+        response = camera.get_frame()
+        labels = response['labels']
+        print(labels)
+        self.assertEqual(len(labels), 0)
+        self.assertFalse('mailing_package' in labels)
+        self.assertFalse('person' in labels)
+        self.assertFalse('cat' in labels)
+        self.assertFalse('cat_mouth' in labels)
+        self.assertFalse('cat_eye' in labels)
+        self.assertFalse('cat_nose' in labels)
+
 
 if __name__ =="__main__":
     unittest.main()
