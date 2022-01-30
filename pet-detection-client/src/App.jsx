@@ -46,7 +46,7 @@ const  App = () => {
             mode: 'dark',
         },
     });
-    const LIVE_STREAM_URL = "http://127.0.0.1:5000/video";
+    const LIVE_STREAM_URL = "http://127.0.0.1:8000/video";
     const [videoSource, setVideoSource] = useState(LIVE_STREAM_URL);
     const [watchingStream, setWatchingStream] = useState(true);
     const [events, setEvents] = useState([]);
@@ -70,7 +70,7 @@ const  App = () => {
     }
 
     const watchStream = () => {
-        setVideoSource('http://localhost:5000/video');
+        setVideoSource('http://localhost:8000/video');
         setWatchingStream(true)
     }
 
@@ -79,7 +79,7 @@ const  App = () => {
             <CssBaseline />
             <AppBar position="fixed" color={"default"} sx={{ height: "8vh" }}>
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} id={"app-title"}>
                         🐶 Pet Door System
                     </Typography>
                     <Button color="inherit">🎥 Video</Button>
@@ -147,7 +147,7 @@ const  App = () => {
                             </Card>
                         </Grid>
                         <Grid item sm={12} xs={12}>
-                            <Card>
+                            <Card id={"events-card"}>
                                 <CardContent>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                         Events
@@ -163,7 +163,7 @@ const  App = () => {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {events.map((row) => (
+                                                {events.map((row, index) => (
                                                     <TableRow
                                                         key={row.name}
                                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -174,7 +174,7 @@ const  App = () => {
                                                         <TableCell >{row.classes}</TableCell>
                                                         <TableCell >{row.access_granted.toString()}</TableCell>
                                                         <TableCell >
-                                                            <Button size={"small"} value={row.video} href={'https://video-snapshots.s3.amazonaws.com/' + row.video} variant="outlined" startIcon={<PlayCircleFilledTwoToneIcon />} download>
+                                                            <Button id={"download"+index} size={"small"} value={row.video} href={'https://video-snapshots.s3.amazonaws.com/' + row.video} variant="outlined" startIcon={<PlayCircleFilledTwoToneIcon />} download>
                                                                 Download Clip
                                                             </Button>
                                                         </TableCell>

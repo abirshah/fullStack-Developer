@@ -9,8 +9,8 @@ from pet_detection import petDetection
 
 
 class Video(object):
-    def __init__(self, queueSize=128, cameraSource=0, timeout=10):
-        self.video = CamVideoStream(src=cameraSource)
+    def __init__(self, queueSize=128, cameraSource=0, timeout=0):
+        self.video = CamVideoStream(cameraSource)
         time.sleep(timeout)
         self.video.start()
         # network to coco weight file and cfg file

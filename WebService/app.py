@@ -62,7 +62,7 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
     def gen(camera):
         while True:
             response = camera.get_frame()
-            frame = response.frame
+            frame = response["frame"]
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
@@ -90,4 +90,4 @@ if __name__ == "__main__":
         s3_service.download_file(key='yolov4-custom_bird_mail_new.weights', bucket='weightfiles',
                                  filename='weight_files/yolov4-custom_bird_mail_new.weights')
     app = create_app()
-    app.run()
+    app.run(host='127.0.0.1', port=8000)
