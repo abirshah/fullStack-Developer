@@ -1,6 +1,0 @@
-
-
-class UserWithIdDoesNotExist implements Exception
-{
-
-}

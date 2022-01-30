@@ -1,6 +1,0 @@
-
-
-class PasswordDoesNotMatch implements Exception
-{
-
-}

@@ -1,6 +1,0 @@
-
-
-class UserIdAlreadyTaken implements Exception
-{
-
-}
