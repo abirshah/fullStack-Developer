@@ -4,7 +4,7 @@ from .shared import db, ma
 
 
 class Events(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     classes = db.Column(db.String(100))
     ts = db.Column(db.TIMESTAMP, nullable=False, default=datetime.datetime.now())
     video = db.Column(db.String(100))
