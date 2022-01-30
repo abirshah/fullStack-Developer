@@ -135,6 +135,6 @@ class Video(object):
 
         ret, jpg = cv2.imencode('.jpg', frame)
         return {
-            'frame': jpg.tobytes,
+            'frame': jpg.tobytes(),
             'labels': labels
         }
