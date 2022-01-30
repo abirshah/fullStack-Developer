@@ -54,13 +54,14 @@ class TestUI(unittest.TestCase):
         self.browser.get("http://127.0.0.1:3000")
         self.wait_seconds(5)
         try:
-            self.browser.find_element(by="id", value="events-card").click()
+            self.browser.find_element(by="id", value="events-card")
         except:
             print("Oops!", sys.exc_info()[0], "occurred.")
             self.fail("Events card could not be loaded")
 
         try:
-            self.browser.find_element(by="id", value="download0")
+            self.browser.find_element(by="id", value="download0").click()
+            self.wait_seconds(3)
         except:
             print("Oops!", sys.exc_info()[0], "occurred.")
             self.fail("No Download Clip button found")
