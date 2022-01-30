@@ -30,3 +30,5 @@ WebService/__pycache__/*
 WebService/htmlcov
 WebService/.coverage
 *.weights
+
+pet-detection-client/drivers/chromedriver
