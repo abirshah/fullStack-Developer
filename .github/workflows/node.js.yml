@@ -1,0 +1,29 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    #defaults:
+    #  run:
+    #    working-directory: pet-detection-client
+    steps:
+    - uses: actions/checkout@v2
+    - run: echo $PWD
+    - name: Set Node.js 12.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 12.x
+    - name: setup
+      working-directory: ./pet-detection-client/
+      run: |
+        npm ci
+        npm build --if-present

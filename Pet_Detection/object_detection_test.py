@@ -64,6 +64,8 @@ class OpenCvTest(unittest.TestCase):
         my_img = cv2.imread('test_images/Dataset.jpg')
         self.assertFalse(cv2.imshow('img', my_img))
 
+if __name__ == '__main__':
+    unittest.main()
 
 
 
