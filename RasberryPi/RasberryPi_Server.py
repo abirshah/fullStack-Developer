@@ -1,31 +1,24 @@
 from gpiozero import LED, Button, MotionSensor
-from picamera import PiCamera
 import time
 import sys
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
+import os
 
 
-#HOST = '192.168.0.43'  #RasberryPI wlan1
-#HOST = '192.168.0.42'  #RasberryPI wlan0
 HOST = '127.0.0.1'
 PORT = 4000
 green_led = LED(4)
 red_led = LED(22)
 blue_led = LED(26)
 motion_detector = MotionSensor(12)
-# camera = PiCamera()
 
 timestamp = time.strftime("%y%b%d_%H:%M:%S")
-image_format = ".jpg"
-video_format = ".h264"
 print("System activated at " + timestamp)
 
 green_led.off()
 red_led.on()
 blue_led.off()
-# camera.resolution = (640, 480)
-# camera.vflip = True
 
 
 def open_door():
@@ -49,7 +42,6 @@ def sense_motion():
 class RP_Server(BaseHTTPRequestHandler):
 
     def do_GET(self):
-        print("Get block: " + str(self) )
         if self.path == '/':
             self.path = '/index.html'
         try:
@@ -73,6 +65,8 @@ class RP_Server(BaseHTTPRequestHandler):
         
 
 # Run Server
+os.popen('sh /home/pi/capstone/fullStack-Developer/RasberryPi/LaunchVideoStream.sh')
+print("Streaming video from Pi Cam")
 print("Running server on RasberryPI")
 server = HTTPServer((HOST, PORT), RP_Server)
 server_thread = threading.Thread(target=server.serve_forever)
