@@ -2,6 +2,7 @@ from gpiozero import LED, Button, MotionSensor
 from picamera import PiCamera
 import time
 import sys
+import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
@@ -35,7 +36,16 @@ def open_door():
     green_led.off()
     red_led.on()
     
+
+def sense_motion():
+    while True:
+        motion_detector.wait_for_motion() 
+        timestamp = time.strftime("%y%b%d_%H:%M:%S")
+        print("Motion Detector Triggered " + timestamp)
+        time.sleep(0.8)
+        sense_motion()
     
+
 class RP_Server(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -65,6 +75,8 @@ class RP_Server(BaseHTTPRequestHandler):
 # Run Server
 print("Running server on RasberryPI")
 server = HTTPServer((HOST, PORT), RP_Server)
-server.serve_forever()
+server_thread = threading.Thread(target=server.serve_forever)
+motion_sensor_thread = threading.Thread(target=sense_motion)
 
-
+server_thread.start()
+motion_sensor_thread.start()
