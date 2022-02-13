@@ -26,6 +26,15 @@ hs_err_pid*
 WebService/env
 WebService/weight_files/*
 WebService/tmp/*
+WebService/__pycache__/*
+Models/__pycache__/*
+Services/__pycache__/*
+Config/__pycache__/*
+.DS_Store
+WebService/htmlcov
+WebService/.coverage
+*.weights
 
 
-**/.DS_Store
+
+pet-detection-client/drivers/chromedriver

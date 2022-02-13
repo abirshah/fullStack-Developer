@@ -1,0 +1,52 @@
+name: mobile_app
+description: A new Flutter project.
+
+publish_to: 'none'
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  
+  flutter_general:
+    path: ../FlutterGeneralLibrary
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+
+  fonts:
+    - family: PTSansCaption
+      fonts:
+        - asset: assets/fonts/PTSansCaption-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PTSansCaption-Bold.ttf
+          weight: 700
+    - family: Halvetica
+      fonts:
+        - asset: assets/fonts/helvetica_light.ttf
+          weight: 100
+        - asset: assets/fonts/Helvetica.ttf
+          weight: 400
+        - asset: assets/fonts/Helvetica-Bold.ttf
+          weight: 700
+    - family: HalveticaNeue
+      fonts:
+        - asset: assets/fonts/HelveticaNeue.ttf
+          weight: 400

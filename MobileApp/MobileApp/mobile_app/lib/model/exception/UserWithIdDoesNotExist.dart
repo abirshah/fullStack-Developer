@@ -1,0 +1,6 @@
+
+
+class UserWithIdDoesNotExist implements Exception
+{
+
+}

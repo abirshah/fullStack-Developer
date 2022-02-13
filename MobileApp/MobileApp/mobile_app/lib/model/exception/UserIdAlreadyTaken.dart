@@ -1,0 +1,6 @@
+
+
+class UserIdAlreadyTaken implements Exception
+{
+
+}

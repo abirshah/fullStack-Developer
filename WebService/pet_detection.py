@@ -90,9 +90,10 @@ class petDetection:
             classes = [line.strip() for line in f.readlines()]
         return classes
 
-    def draw_bounding_boxes(self, boxes, index, classes, class_ids, confidences, my_img, color):
+    def draw_bounding_boxes(self, boxes, index, classes, class_ids, confidences, my_img, color, labels):
         x, y, w, h = boxes[index]
         label = str(classes[class_ids[index]])
         confidence = str(round(confidences[index], 2))
         cv2.rectangle(my_img, (x, y), (x + w, y + h), color, 2)
         cv2.putText(my_img, label + " " + confidence, (x, y + 20), self.font, 2, color, 2)
+        labels.append(label)
