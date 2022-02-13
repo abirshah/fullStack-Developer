@@ -27,3 +27,5 @@ WebService/env
 WebService/weight_files/*
 WebService/tmp/*
 
+
+**/.DS_Store
