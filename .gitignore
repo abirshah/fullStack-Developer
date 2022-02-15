@@ -35,6 +35,4 @@ WebService/htmlcov
 WebService/.coverage
 *.weights
 
-
-
 pet-detection-client/drivers/chromedriver
