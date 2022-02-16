@@ -37,6 +37,7 @@ def analyze(my_img, net_coco, coco_classes, pd):
 
     for i in indexes_coco.flatten():
         label = []
+        bb = []
         if str(coco_classes[class_ids_coco[i]]) == 'cat' or str(coco_classes[class_ids_coco[i]]) == 'dog':
             pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
                                    confidences=confidences_coco, my_img=my_img, color=(0, 255, 0), labels=label)
@@ -75,14 +76,16 @@ def main():
         for f in os.listdir(newpath):
             index = f.find('.')
             textfile_name = f[:index]
-            file = open(newpath + '/' + textfile_name + '.txt', "a")
+            print("FileName :" , textfile_name )
             my_img = cv2.imread(newpath + '/' + f)
             bb = analyze(my_img, net_coco, coco_classes, pd)
-            file.write(str(counter) + " ")
-            for b in range(len(bb)-1):
-                file.write(str(bb[b]) + " ")
-            file.write(str(bb[len(bb)-1]) + "\n")
-            file.close()
+            if not(bb == []):
+                file = open(newpath + '/' + textfile_name + '.txt', "a")
+                file.write(str(counter) + " ")
+                for b in range(len(bb)-1):
+                    file.write(str(round(bb[b], 6)) + " ")
+                file.write(str(round(bb[len(bb)-1], 6))+ "\n")
+                file.close()
         counter += 1
 
     print(list_of_pets)
