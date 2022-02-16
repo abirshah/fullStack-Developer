@@ -68,7 +68,7 @@ def main():
 
     path = '../Pet_Detection/pet_images'
     list_of_pets = []
-    counter = 1;
+    counter = 0;
     for filename in os.listdir(path):
         list_of_pets.append(str(filename))
         newpath = path + "/" + filename
