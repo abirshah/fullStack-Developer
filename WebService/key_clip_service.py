@@ -80,9 +80,13 @@ class KeyClipService:
 
     def save_key_event_clip(self):
         result = self.s3_service.upload_file('video-snapshots', self.outputPath, self.outputFile)
+        # Only grant access if a user_cat or user_dog has been detected and if there is not bird in their mouth
         if result:
-            new_event = Events(classes=str(self.labels), video=self.outputFile, access_granted=False)
+            access_granted = False
+            if 'user_cat' in self.labels or 'user_dog' in self.labels:
+                if 'bird_in_cat_mouth' not in self.labels and 'bird_in_dog_mouth' not in self.labels:
+                    access_granted = True
+            new_event = Events(classes=str(self.labels), video=self.outputFile, access_granted=access_granted)
             db_session = self.DBSession
             db_session.add(new_event)
             db_session.commit()
-
