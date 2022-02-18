@@ -20,6 +20,7 @@ dependencies:
   path_provider: 2.0.1
   cupertino_icons: ^1.0.2
   image_picker: ^0.8.4+9
+  video_player: ^2.2.18
   flutter:
     sdk: flutter
 

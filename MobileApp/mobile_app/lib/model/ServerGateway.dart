@@ -2,6 +2,9 @@
 
 import 'dart:io';
 
+import 'package:mobile_app/model/dto/AccessInfo.dart';
+import 'package:mobile_app/model/dto/CapturedImageOrVideo.dart';
+import 'package:mobile_app/model/dto/NotificationInfo.dart';
 import 'package:mobile_app/model/dto/Pet.dart';
 
 import 'ServerGatewayMock.dart';
@@ -30,11 +33,16 @@ abstract class ServerGateway{
   Future<void> signIn(String userId,String password);
 
   Future<List<Pet>> fetchPets();
+  Future<List<AccessInfo>> fetchAccessInfo();
+  Future<List<CapturedImageOrVideo>> fetchCapturedImages();
+  Future<List<CapturedImageOrVideo>> fetchCapturedVideos();
 
 
   Future<void> logout();
   Future<bool> isUserSignedIn();
   Future<UserBase?> getSignedInUser();
+
+  Stream<NotificationInfo> notificationsStream();
 
   Future<void> addPet(Pet pet) ;
 

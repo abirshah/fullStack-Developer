@@ -1,9 +1,13 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app/model/ServerGateway.dart';
+import 'package:mobile_app/pages/AccessInformationPage.dart';
 import 'package:mobile_app/pages/AddPetPage.dart';
+import 'package:mobile_app/pages/CapturedImagesOrVideosPage.dart';
 import 'package:mobile_app/pages/LoginPage.dart';
 import 'package:mobile_app/pages/MainMenu.dart';
+import 'package:mobile_app/pages/NotificationPage.dart';
 import 'package:mobile_app/pages/SettingsPage.dart';
 import 'package:mobile_app/pages/SignupPage.dart';
 import 'package:mobile_app/pages/SplashPage.dart';
@@ -14,6 +18,10 @@ const String SignUpPagePath = "signup";
 const String MainMenuPagePath = "main-menu";
 const String SettingsPagePath = "setting";
 const String AddPetPagePath = "add-pet";
+const String NotificationsPath = "notifications";
+const String AccessInfoPath = "access-info";
+const String CapturedImagesPath = "captured-images";
+const String CapturedVideosPath = "captured-videos";
 
 
 MaterialPageRoute router(RouteSettings settings)
@@ -37,6 +45,18 @@ MaterialPageRoute router(RouteSettings settings)
 
     case AddPetPagePath:
       return _createRoute(AddPetPage());
+
+    case NotificationsPath:
+      return _createRoute(NotificationsPage());
+
+    case AccessInfoPath:
+      return _createRoute(AccessInformationPage());
+
+    case CapturedImagesPath:
+      return _createRoute(CapturedImagesOrVideosPage(ServerGateway.instance().fetchCapturedImages()));
+
+    case CapturedVideosPath:
+      return _createRoute(CapturedImagesOrVideosPage(ServerGateway.instance().fetchCapturedVideos()));
 
     default:
       return _createRoute(Center(child: Text("Unknown Page")));
