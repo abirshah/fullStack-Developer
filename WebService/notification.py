@@ -1,19 +1,27 @@
 import smtplib
 from email.message import EmailMessage
 
-msg = EmailMessage()
-msg['Subject'] = 'Detected'
-msg['From'] = 'Automated Pet Door'
-msg['To'] = 'abir_mtl@hotmail.com'
-msg.set_content("Testing email")
+class notication:
+    def __init__(self):
+        self.msg = EmailMessage()
+        self.server = smtplib.SMTP("smtp.gmail.com", 587)
 
-server = smtplib.SMTP("smtp.gmail.com", 587)
+    def sendNotification(self, subject, receiver_email, content):
+        self.msg['Subject'] = subject
+        self.msg['From'] = 'Automated Pet Door'
+        self.msg['To'] = receiver_email
+        self.msg.set_content(content)
+        self.server.send_message(self.msg)
 
-server.starttls()
+    def login(self):
+        self.server.starttls()
+        self.server.login("abirshah28@gmail.com", "ubizixrpedoxlscu")
 
-server.login("abirshah28@gmail.com", "ubizixrpedoxlscu")
+    def quit(self):
+        self.server.quit()
 
-server.send_message(msg)
-
-server.quit()
-
+if __name__ == "__main__":
+    n = notication()
+    n.login()
+    n.sendNotification(subject="Detected", receiver_email="deeppatel770@gmail.com", content="Testing email")
+    n.quit()
