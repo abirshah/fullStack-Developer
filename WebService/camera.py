@@ -23,6 +23,8 @@ class Video(object):
         self.consecFrames = 0
         self.pet_detection = petDetection()
         self.notif = notification()
+        self.notif.login()
+        self.email = "deeppatel770@gmail.com"
 
     def __del__(self):
         self.video.stop()
@@ -63,15 +65,23 @@ class Video(object):
                     self.pet_detection.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
                                            confidences=confidences_coco, my_img=frame, color=(0, 0, 255), labels=labels)
                     print(str(coco_classes[class_ids_coco[i]]) + " found near by")
+                    self.notif.send_notification(str(coco_classes[class_ids_coco[i]]) +" Detected", self.email,
+                                                 "Detect at time: " + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 
                 if not len(indexes_mail_bird) == 0:
                     for j in indexes_mail_bird.flatten():
                         if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
+                            self.notif.send_notification("Mailing Package Detected", self.email,
+                                                         "Detect at time: " + datetime.datetime.now().strftime(
+                                                             "%Y%m%d-%H%M%S"))
                             self.pet_detection.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                                    class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
                                                    my_img=frame, color=(0, 0, 255), labels=labels)
                         elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(
                                 coco_classes[class_ids_coco[i]]) == 'cat':
+                            self.notif.send_notification("Bird in pets mouth Detected", self.email,
+                                                         "Detect at time: " + datetime.datetime.now().strftime(
+                                                             "%Y%m%d-%H%M%S"))
                             self.pet_detection.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                                    class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
                                                    my_img=frame, color=(0, 0, 255), labels=labels)

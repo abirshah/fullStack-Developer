@@ -6,7 +6,7 @@ class notification:
         self.msg = EmailMessage()
         self.server = smtplib.SMTP("smtp.gmail.com", 587)
 
-    def sendNotification(self, subject, receiver_email, content):
+    def send_notification(self, subject, receiver_email, content):
         self.msg['Subject'] = subject
         self.msg['From'] = 'Automated Pet Door'
         self.msg['To'] = receiver_email
@@ -23,5 +23,5 @@ class notification:
 if __name__ == "__main__":
     n = notication()
     n.login()
-    n.sendNotification(subject="Detected", receiver_email="deeppatel770@gmail.com", content="Testing email")
+    n.send_notification(subject="Detected", receiver_email="deeppatel770@gmail.com", content="Testing email")
     n.quit()
