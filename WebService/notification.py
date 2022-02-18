@@ -1,7 +1,7 @@
 import smtplib
 from email.message import EmailMessage
 
-class notication:
+class notification:
     def __init__(self):
         self.msg = EmailMessage()
         self.server = smtplib.SMTP("smtp.gmail.com", 587)
