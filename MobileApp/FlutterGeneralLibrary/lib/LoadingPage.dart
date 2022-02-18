@@ -44,9 +44,9 @@ class LoadingPage extends StatelessWidget
   }
 }
 
-showLoadingPage(context,Future future,{FutureArrived? futureArrived ,FutureFailed? futureFailed })
+Future showLoadingPage(context,Future future,{FutureArrived? futureArrived ,FutureFailed? futureFailed })
 {
-  Navigator.push(context, MaterialPageRoute(fullscreenDialog: true,
+  return Navigator.push(context, MaterialPageRoute(fullscreenDialog: true,
       builder:(c)=> LoadingPage._(future,futureArrived: futureArrived,futureFailed: futureFailed)
   ));
 }
