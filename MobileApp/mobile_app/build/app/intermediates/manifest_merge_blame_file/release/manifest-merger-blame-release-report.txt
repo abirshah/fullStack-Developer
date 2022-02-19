@@ -1,0 +1,131 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.mobile_app"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+8-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="31" />
+9-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+11-->[com.google.android.exoplayer:exoplayer-core:2.14.1] C:\Users\deepp\.gradle\caches\transforms-3\32c9cc9e2640f28beea00246de73cab8\transformed\jetified-exoplayer-core-2.14.1\AndroidManifest.xml:24:5-79
+11-->[com.google.android.exoplayer:exoplayer-core:2.14.1] C:\Users\deepp\.gradle\caches\transforms-3\32c9cc9e2640f28beea00246de73cab8\transformed\jetified-exoplayer-core-2.14.1\AndroidManifest.xml:24:22-76
+12
+13    <application
+13-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:3:4-41:19
+14        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+14-->[androidx.core:core:1.6.0] C:\Users\deepp\.gradle\caches\transforms-3\ccea5d94eb17275e2d82d13c5ab96dd0\transformed\core-1.6.0\AndroidManifest.xml:24:18-86
+15        android:icon="@mipmap/ic_launcher"
+15-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:5:9-43
+16        android:label="mobile_app" >
+16-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:4:9-35
+17        <activity
+17-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:6:9-35:20
+18            android:name="com.example.mobile_app.MainActivity"
+18-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:8:13-41
+19            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+19-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:11:13-163
+20            android:exported="true"
+20-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:7:17-40
+21            android:hardwareAccelerated="true"
+21-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:12:13-47
+22            android:launchMode="singleTop"
+22-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:9:13-43
+23            android:theme="@style/LaunchTheme"
+23-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:10:13-47
+24            android:windowSoftInputMode="adjustResize" >
+24-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:13:13-55
+25
+26            <!--
+27                 Specifies an Android theme to apply to this Activity as soon as
+28                 the Android process has started. This theme is visible to the user
+29                 while the Flutter UI initializes. After that, this theme continues
+30                 to determine the Window background behind the Flutter UI.
+31            -->
+32            <meta-data
+32-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:18:13-21:17
+33                android:name="io.flutter.embedding.android.NormalTheme"
+33-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:19:15-70
+34                android:resource="@style/NormalTheme" />
+34-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:20:15-52
+35            <!--
+36                 Displays an Android View that continues showing the launch screen
+37                 Drawable until Flutter paints its first frame, then this splash
+38                 screen fades out. A splash screen is useful to avoid any visual
+39                 gap between the end of Android's launch screen and the painting of
+40                 Flutter's first frame.
+41            -->
+42            <meta-data
+42-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:27:13-30:17
+43                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+43-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:28:15-79
+44                android:resource="@drawable/launch_background" />
+44-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:29:15-61
+45
+46            <intent-filter>
+46-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:31:13-34:29
+47                <action android:name="android.intent.action.MAIN" />
+47-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:32:17-68
+47-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:32:25-66
+48
+49                <category android:name="android.intent.category.LAUNCHER" />
+49-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:33:17-76
+49-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:33:27-74
+50            </intent-filter>
+51        </activity>
+52        <!--
+53             Don't delete the meta-data below.
+54             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+55        -->
+56        <meta-data
+56-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:38:9-40:33
+57            android:name="flutterEmbedding"
+57-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:39:13-44
+58            android:value="2" />
+58-->C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\android\app\src\main\AndroidManifest.xml:40:13-30
+59
+60        <provider
+60-->[:image_picker] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\image_picker\intermediates\merged_manifest\release\AndroidManifest.xml:10:9-18:20
+61            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+61-->[:image_picker] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\image_picker\intermediates\merged_manifest\release\AndroidManifest.xml:11:13-82
+62            android:authorities="com.example.mobile_app.flutter.image_provider"
+62-->[:image_picker] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\image_picker\intermediates\merged_manifest\release\AndroidManifest.xml:12:13-74
+63            android:exported="false"
+63-->[:image_picker] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\image_picker\intermediates\merged_manifest\release\AndroidManifest.xml:13:13-37
+64            android:grantUriPermissions="true" >
+64-->[:image_picker] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\image_picker\intermediates\merged_manifest\release\AndroidManifest.xml:14:13-47
+65            <meta-data
+65-->[:image_picker] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\image_picker\intermediates\merged_manifest\release\AndroidManifest.xml:15:13-17:75
+66                android:name="android.support.FILE_PROVIDER_PATHS"
+66-->[:image_picker] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\image_picker\intermediates\merged_manifest\release\AndroidManifest.xml:16:17-67
+67                android:resource="@xml/flutter_image_picker_file_paths" />
+67-->[:image_picker] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\image_picker\intermediates\merged_manifest\release\AndroidManifest.xml:17:17-72
+68        </provider>
+69
+70        <activity
+70-->[:url_launcher] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\url_launcher\intermediates\merged_manifest\release\AndroidManifest.xml:10:9-13:74
+71            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+71-->[:url_launcher] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\url_launcher\intermediates\merged_manifest\release\AndroidManifest.xml:11:13-74
+72            android:exported="false"
+72-->[:url_launcher] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\url_launcher\intermediates\merged_manifest\release\AndroidManifest.xml:12:13-37
+73            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+73-->[:url_launcher] C:\Users\deepp\OneDrive\Documents\Github\fullStack-Developer\MobileApp\mobile_app\build\url_launcher\intermediates\merged_manifest\release\AndroidManifest.xml:13:13-71
+74
+75        <uses-library
+75-->[androidx.window:window:1.0.0-beta04] C:\Users\deepp\.gradle\caches\transforms-3\562439e5059befb4807e013eb4b119ac\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
+76            android:name="androidx.window.extensions"
+76-->[androidx.window:window:1.0.0-beta04] C:\Users\deepp\.gradle\caches\transforms-3\562439e5059befb4807e013eb4b119ac\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:26:13-54
+77            android:required="false" />
+77-->[androidx.window:window:1.0.0-beta04] C:\Users\deepp\.gradle\caches\transforms-3\562439e5059befb4807e013eb4b119ac\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:27:13-37
+78        <uses-library
+78-->[androidx.window:window:1.0.0-beta04] C:\Users\deepp\.gradle\caches\transforms-3\562439e5059befb4807e013eb4b119ac\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:28:9-30:40
+79            android:name="androidx.window.sidecar"
+79-->[androidx.window:window:1.0.0-beta04] C:\Users\deepp\.gradle\caches\transforms-3\562439e5059befb4807e013eb4b119ac\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:29:13-51
+80            android:required="false" />
+80-->[androidx.window:window:1.0.0-beta04] C:\Users\deepp\.gradle\caches\transforms-3\562439e5059befb4807e013eb4b119ac\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:30:13-37
+81    </application>
+82
+83</manifest>
