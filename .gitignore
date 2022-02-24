@@ -23,10 +23,13 @@
 hs_err_pid*
 
 .idea
+Pet_Detection/__pycache__/*
 WebService/env
 WebService/weight_files/*
 WebService/tmp/*
 WebService/__pycache__/*
+WebService/Config/*
+WebService/Models/__pycache__/*
 Models/__pycache__/*
 Services/__pycache__/*
 Config/__pycache__/*
