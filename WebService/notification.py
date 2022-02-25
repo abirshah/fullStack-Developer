@@ -7,11 +7,13 @@ class notification:
         self.server = smtplib.SMTP("smtp.gmail.com", 587)
 
     def send_notification(self, subject, receiver_email, content):
+        login()
         self.msg['Subject'] = subject
         self.msg['From'] = 'Automated Pet Door'
         self.msg['To'] = receiver_email
         self.msg.set_content(content)
         self.server.send_message(self.msg)
+        quit()
 
     def login(self):
         self.server.starttls()
