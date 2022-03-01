@@ -60,11 +60,13 @@ def submitbutton():
     return render_template('index.html')
 
 
-#os.popen('sh /home/pi/capstone/fullStack-Developer/RasberryPi/LaunchVideoStream.sh')
-#print("Streaming video from Pi Cam")
-#print("Running server on RasberryPI")
+# Start Network Video Stream
+os.popen('sh /home/pi/capstone/fullStack-Developer/RasberryPi/LaunchVideoStream.sh')
+print("Streaming video from Pi Cam")
+print("Running server on RaspberryPI")
 motion_sensor_thread = threading.Thread(target=sense_motion)
 motion_sensor_thread.start()
 
-#app.run(host='192.168.0.42', port=5000)
-app.run(debug=True, port=5000)
+app.run(host='192.168.0.42', port=5000)
+
+
