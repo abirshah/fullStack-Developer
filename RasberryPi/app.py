@@ -25,7 +25,7 @@ def open_door():
     print("Door Opening for 10 seconds")
     red_led.off()
     green_led.on()
-    time.sleep(5)
+    time.sleep(10)
     green_led.off()
     red_led.on()
     
