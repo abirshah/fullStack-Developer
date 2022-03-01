@@ -6,26 +6,25 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import os
 
 
-HOST = '127.0.0.1'
+HOST = '192.168.0.42'
 PORT = 4000
 green_led = LED(4)
 red_led = LED(22)
 blue_led = LED(26)
 motion_detector = MotionSensor(12)
-
-timestamp = time.strftime("%y%b%d_%H:%M:%S")
-print("System activated at " + timestamp)
-
 green_led.off()
 red_led.on()
 blue_led.off()
+
+timestamp = time.strftime("%y%b%d_%H:%M:%S")
+print("System activated at " + timestamp)
 
 
 def open_door():
     print("Door Opening for 10 seconds")
     red_led.off()
     green_led.on()
-    time.sleep(10)
+    time.sleep(5)
     green_led.off()
     red_led.on()
     
@@ -43,6 +42,10 @@ class RP_Server(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == '/':
+            self.path = '/index.html'
+        elif self.path == '/open.html':
+            print("Door Opened")
+            open_door()
             self.path = '/index.html'
         try:
             file_to_open = open(self.path[1:]).read()
@@ -65,7 +68,7 @@ class RP_Server(BaseHTTPRequestHandler):
         
 
 # Run Server
-os.popen('sh /home/pi/capstone/fullStack-Developer/RasberryPi/LaunchVideoStream.sh')
+# os.popen('sh /home/pi/capstone/fullStack-Developer/RasberryPi/LaunchVideoStream.sh')
 print("Streaming video from Pi Cam")
 print("Running server on RasberryPI")
 server = HTTPServer((HOST, PORT), RP_Server)
