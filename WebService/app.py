@@ -1,76 +1,39 @@
-from flask import Flask, render_template, Response, request, Blueprint, jsonify
-from flask_cors import CORS
-from camera import Video
-from Models.shared import db, ma
-from Models.events import Events, EventsSchema
-import os.path
-from Services.s3_service import S3Service
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-app = Flask(__name__)
-CORS(app)
-basedir = os.path.abspath(os.path.dirname(__file__))
-# Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:abir1971@pet-project.cqlvbpbplnsv.us-east-2.rds.amazonaws.com/automated_pet_door'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# Init db
-db.init_app(app)
-# Init ma
-ma.init_app(app)
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+    <title>Pet Detection Video Server!</title>
+</head>
+<body>
+<!-- As a link -->
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Pet Detection</a>
+    </div>
+</nav>
+{% block content %}
+{% endblock %}
 
-@app.route('/events', methods=['POST'])
-def add_event():
-    classes = request.json['classes']
-    video = request.json['video']
-    access_granted = request.json['access_granted']
+<h3>Open Door With Form</h3>
+<form action="/submitbutton" method="POST">
+<input type="submit" name="submit" value="open">
+</form>
 
-    new_event = Events(classes=str(classes), video=video, access_granted=access_granted)
-    db.session.add(new_event)
-    db.session.commit()
+<!-- Optional JavaScript; choose one of the two! -->
 
-@app.route('/events', methods=['GET'])
-def get_events():
-    all_events = Events.query.all()
-    events_schema = EventsSchema(many=True)
-    result = events_schema.dump(all_events)
-    return jsonify(result)
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
-@app.route('/video/url', methods=['POST'])
-def generate_video_url():
-    video_key = request.json['video']
-    s3_service = S3Service()
-    response = s3_service.generate_url(bucket='video-snapshots', key=video_key)
-    return jsonify({'videoUrl': response})
-
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
-
-
-@app.route('/video')
-def video():
-    return Response(gen(Video()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-if __name__ == "__main__":
-    s3_service = S3Service()
-    if not os.path.exists('weight_files/yolov4.weights'):
-        print("Downloading weight file yolov4.weights")
-        s3_service.download_file(key='yolov4.weights', bucket='weightfiles', filename='weight_files/yolov4.weights')
-
-    if not os.path.exists('weight_files/yolov4-custom_10000.weights'):
-        print("Downloading weight file yolov4-custom_10000.weights")
-        s3_service.download_file(key='yolov4-custom_10000.weights', bucket='weightfiles',
-                                 filename='weight_files/yolov4-custom_10000.weights')
-
-    if not os.path.exists('weight_files/yolov4-custom_bird_mail_new.weights'):
-        print("Downloading weight file yolov4-custom_bird_mail_new.weights")
-        s3_service.download_file(key='yolov4-custom_bird_mail_new.weights', bucket='weightfiles',
-                             filename='weight_files/yolov4-custom_bird_mail_new.weights')
-    app.run(debug=True)
+<!-- Option 2: Separate Popper and Bootstrap JS -->
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+-->
+</body>
+</html>
