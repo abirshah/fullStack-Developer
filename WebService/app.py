@@ -17,7 +17,10 @@ motion_log = []
 
 def open_door():
     print("opening door")
-    urllib.request.urlopen('http://192.168.0.42:5000/open.html')
+    try:
+        urllib.request.urlopen('http://192.168.0.42:5000/open.html')
+    except:
+        print("Error opening URL to send door activation signal")
 	
 
 def create_app(cfg: Optional[config.Config] = None) -> Flask:
