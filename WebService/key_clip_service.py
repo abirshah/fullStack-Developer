@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from queue import Queue
 from Services.s3_service import S3Service
 from Models.events import Events
+from notification import notification
 import mysql.connector
 import time
 import cv2
@@ -88,9 +89,9 @@ class KeyClipService:
             if 'user_cat' in self.labels or 'user_dog' in self.labels:
                 if 'bird_in_cat_mouth' not in self.labels and 'bird_in_dog_mouth' not in self.labels:
                     access_granted = True
-                    self.notif.send_notification("User Pet Detected", self.email,
-                                                 "Detect at time: " + datetime.datetime.now().strftime(
-                                                     "%Y/%m/%d-%H:%M:%S"))
+                    ##self.notif.send_notification("User Pet Detected", self.email,
+                    ##                             "Detect at time: " + datetime.datetime.now().strftime(
+                    ##                                 "%Y/%m/%d-%H:%M:%S"))
             new_event = Events(classes=str(self.labels), video=self.outputFile, access_granted=access_granted)
             db_session = self.DBSession
             db_session.add(new_event)
