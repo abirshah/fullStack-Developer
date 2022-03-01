@@ -24,9 +24,3 @@ class notification:
         n.msg.set_content(content)
         n.server.send_message(n.msg)
         n.quit()
-
-if __name__ == "__main__":
-    n = notication()
-    n.login()
-    n.send_notification(subject="Detected", receiver_email="deeppatel770@gmail.com", content="Testing email")
-    n.quit()
