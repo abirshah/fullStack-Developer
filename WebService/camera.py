@@ -6,7 +6,7 @@ import datetime
 import time
 import math
 from pet_detection import petDetection
-from notification_service import Notification
+from notification_service import NotificationService
 
 
 class Video(object):

@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from queue import Queue
 from Services.s3_service import S3Service
 from Models.events import Events
-from notification_service import Notification
+from notification_service import NotificationService
 import mysql.connector
 import time
 import cv2

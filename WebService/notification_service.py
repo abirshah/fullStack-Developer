@@ -2,7 +2,7 @@ import smtplib
 from email.message import EmailMessage
 
 
-class Notification:
+class NotificationService:
     def __init__(self):
         self.n = None
 
