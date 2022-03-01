@@ -16,13 +16,13 @@ class Video(object):
         self.video.start()
         # network to coco weight file and cfg file
         self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
-        # network to the mail packagesand bird in the mouth custom yolov4 wight file and cfg file
+        # network to the mail packages and bird in the mouth custom yolov4 wight file and cfg file
         self.net_mail_bird = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_mail_bird.cfg',
                                                         'weight_files/yolov4-custom_bird_mail_new.weights')
         self.keyClipSerivce = KeyClipService(bufSize=32)
         self.consecFrames = 0
         self.pet_detection = petDetection()
-        self.notif = Notification()
+        self.notification = NotificationService()
         self.email = "deeppatel770@gmail.com"
 
     def __del__(self):
@@ -68,14 +68,14 @@ class Video(object):
                                                            confidences=confidences_coco, my_img=frame,
                                                            color=(0, 0, 255), labels=labels)
                     print(str(coco_classes[class_ids_coco[i]]) + " found near by")
-                    self.notif.send_notification(str(coco_classes[class_ids_coco[i]]) + " Detected", self.email,
+                    self.notification.send_notification(str(coco_classes[class_ids_coco[i]]) + " Detected", self.email,
                                                  "Detect at time: " + datetime.datetime.now().strftime(
                                                      "%Y/%m/%d-%H:%M:%S"))
 
                 if not len(indexes_mail_bird) == 0:
                     for j in indexes_mail_bird.flatten():
                         if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
-                            self.notif.send_notification("Mailing Package Detected", self.email,
+                            self.notification.send_notification("Mailing Package Detected", self.email,
                                                          "Detect at time: " + datetime.datetime.now().strftime(
                                                              "%Y/%m/%d-%H:%M:%S"))
                             self.pet_detection.draw_bounding_boxes(boxes=boxes_mail_bird, index=j,
@@ -85,7 +85,7 @@ class Video(object):
                                                                    my_img=frame, color=(0, 0, 255), labels=labels)
                         elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(
                                 coco_classes[class_ids_coco[i]]) == 'cat':
-                            self.notif.send_notification("Bird in pets mouth Detected", self.email,
+                            self.notification.send_notification("Bird in pets mouth Detected", self.email,
                                                          "Detect at time: " + datetime.datetime.now().strftime(
                                                              "%Y/%m/%d-%H:%M:%S"))
                             self.pet_detection.draw_bounding_boxes(boxes=boxes_mail_bird, index=j,
