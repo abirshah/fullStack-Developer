@@ -12,11 +12,7 @@ class NotificationService:
         if self.timer():
             self.notification = Sender()
             self.notification.log_in()
-            self.notification.msg['Subject'] = subject
-            self.notification.msg['From'] = 'Automated Pet Door'
-            self.notification.msg['To'] = receiver_email
-            self.notification.msg.set_content(content)
-            self.notification.server.send_message(self.notification.msg)
+            self.notification.send(subject,receiver_email, content)
             self.notification.quit()
         else:
             print("Last email was sent less than a minute ago")
@@ -50,3 +46,10 @@ class Sender:
 
     def quit(self):
         self.server.quit()
+
+    def send(self, subject, receiver_email, content):
+        self.msg['Subject'] = subject
+        self.msg['From'] = 'Automated Pet Door'
+        self.msg['To'] = receiver_email
+        self.msg.set_content(content)
+        self.server.send_message(self.msg)
