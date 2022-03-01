@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from queue import Queue
 from Services.s3_service import S3Service
 from Models.events import Events
-from notification import notification
+from notification import Notification
 import mysql.connector
 import time
 import cv2
@@ -32,7 +32,7 @@ class KeyClipService:
                 bind=self.db_engine
             )
         )
-        self.notif = notification()
+        self.notif = Notification()
         self.email = "deeppatel770@gmail.com"
 
 

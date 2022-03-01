@@ -6,7 +6,7 @@ import datetime
 import time
 import math
 from pet_detection import petDetection
-from notification import notification
+from notification import Notification
 
 
 class Video(object):
@@ -22,7 +22,7 @@ class Video(object):
         self.keyClipSerivce = KeyClipService(bufSize=32)
         self.consecFrames = 0
         self.pet_detection = petDetection()
-        self.notif = notification()
+        self.notif = Notification()
         self.email = "deeppatel770@gmail.com"
 
     def __del__(self):
