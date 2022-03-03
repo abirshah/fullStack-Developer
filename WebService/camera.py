@@ -10,7 +10,12 @@ from pet_detection import petDetection
 
 class Video(object):
     def __init__(self, queueSize=128):
-        self.video = CamVideoStream(src=0)
+        try:
+            self.video = CamVideoStream('http://192.168.0.42:3000')
+            print("Connected to PiCam")
+        except:
+            self.video = CamVideoStream(src=0)
+            print("Connected to the device's web-cam")
         time.sleep(3)
         self.video.start()
         # network to coco weight file and cfg file
