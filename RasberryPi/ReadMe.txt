@@ -14,8 +14,13 @@ Please refer to the video at this link for a demo of the files in this folder.
 
 https://www.youtube.com/watch?v=Pl2zvEAlqzU
 
+
 The video demonstrates:
 
 SN-114 - As a developer, I want the system to equip with a motion detection sensor, so the user doesn’t need to manually start the system.
 
 SN-121 - As a developer, I want the pet door sensor to be active for 10 seconds when it detects an owner’s pet so that the system can process the signal to open the door.
+
+SN-166 Rasberry Pi needs to send and receive signals to and from the backend (https://www.youtube.com/watch?v=xEFoWv2WPZY&t=4s&ab_channel=Mike%3APlatinumAudio)
+
+SN-167 Raspberry Pi needs to stream video to the backend (Demo is uploading...)
