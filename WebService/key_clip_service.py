@@ -9,10 +9,13 @@ from notification_service import NotificationService
 import mysql.connector
 import time
 import cv2
+
 DATABASE_CONNECTION_INFO = 'mysql://admin:abir1971@pet-project.cqlvbpbplnsv.us-east-2.rds.amazonaws.com/automated_pet_door'
+
 
 class KeyClipService:
     def __init__(self, bufSize=64, timeout=1.0):
+        self.user_pets = None
         self.bufSize = bufSize
         self.timeout = timeout
         self.frames = deque(maxlen=bufSize)
@@ -35,12 +38,12 @@ class KeyClipService:
         self.notification = NotificationService()
         self.email = "deeppatel770@gmail.com"
 
-
-    def start(self, outputPath, outputFile, labels, fourcc, fps, width, height):
+    def start(self, outputPath, outputFile, labels, fourcc, fps, width, height, user_pets):
         self.recording = True
         self.outputPath = outputPath
         self.outputFile = outputFile
         self.labels = labels
+        self.user_pets = user_pets
         print(self.frames)
         self.writer = cv2.VideoWriter(outputPath, fourcc, fps,
                                       (width, height), True)
@@ -86,12 +89,13 @@ class KeyClipService:
         # Only grant access if a user_cat or user_dog has been detected and if there is not bird in their mouth
         if result:
             access_granted = False
-            if 'user_cat' in self.labels or 'user_dog' in self.labels:
+            if any(self.user_pets) in self.labels: #or 'user_dog' in self.labels:
                 if 'bird_in_cat_mouth' not in self.labels and 'bird_in_dog_mouth' not in self.labels:
                     access_granted = True
+                    print("access_granted")
                     self.notification.send_notification("User Pet Detected", self.email,
-                                                 "Detect at time: " + datetime.datetime.now().strftime(
-                                                     "%Y/%m/%d-%H:%M:%S"))
+                                                        "Detect at time: " + datetime.datetime.now().strftime(
+                                                            "%Y/%m/%d-%H:%M:%S"))
             new_event = Events(classes=str(self.labels), video=self.outputFile, access_granted=access_granted)
             db_session = self.DBSession
             db_session.add(new_event)
