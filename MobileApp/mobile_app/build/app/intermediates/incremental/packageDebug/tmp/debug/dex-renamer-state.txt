@@ -1,4 +1,0 @@
-#Fri Feb 18 20:56:50 EST 2022
-base.0=C\:\\Users\\deepp\\OneDrive\\Documents\\Github\\fullStack-Developer\\MobileApp\\mobile_app\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
-renamed.0=classes.dex
-path.0=classes.dex
