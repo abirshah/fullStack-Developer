@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app/model/dto/AccessInfo.dart';
@@ -20,7 +21,7 @@ import 'exception/PasswordDoesNotMatch.dart';
 import 'exception/UserWithIdDoesNotExist.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-class ServerGatewayMock extends ServerGateway
+class ServerGatewayRealImpl extends ServerGateway
 {
   StreamController<NotificationInfo> _notificationsStreamController = StreamController<NotificationInfo>.broadcast();
   int delayMillis = 1000;
@@ -52,7 +53,7 @@ class ServerGatewayMock extends ServerGateway
   }
 
 
-  ServerGatewayMock();
+  ServerGatewayRealImpl();
   
   
   @override
@@ -227,25 +228,22 @@ class ServerGatewayMock extends ServerGateway
 
     return _doAfterDelay(()  async{
       return [
-        CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
       ];
     });
   }
 
   @override
-  Future<List<CapturedImageOrVideo>> fetchCapturedVideos() {
+  Future<List<CapturedImageOrVideo>> fetchCapturedVideos() async {
 
-    return _doAfterDelay(()  async{
-      return [
-        CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-      ];
-    });
+    var response = await http.get(Uri.parse("http://10.0.2.2:5000/events"));
+    var eventsList = jsonDecode(response.body) as List;
+    return eventsList.map<CapturedImageOrVideo>((e) {
+      var m = e as Map;
+      var type = m["classes"].toString();
+      var date = m["ts"].toString();
+      var url = "https://video-snapshots.s3.amazonaws.com/"+ m["video"].toString();
+      return  CapturedImageOrVideo(type,date,url,true);
+    }).toList();
   }
 
 
@@ -256,6 +254,21 @@ class ServerGatewayMock extends ServerGateway
     await file.create();
     await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
+    return file;
+  }
+
+  @override
+  Future<File> downloadFile(String imageOrVideoUrl) async{
+    print("going to download $imageOrVideoUrl");
+
+    var response = await http.get(Uri.parse(imageOrVideoUrl));
+    final bytes = utf8.encode(imageOrVideoUrl);
+    final base64Str = base64.encode(bytes);
+    var file = await getTempFile(base64Str);
+    file.create();
+    print("file was download and it was ${response.bodyBytes.length}");
+    print("file path : "+file.path);
+    file.writeAsBytesSync(response.bodyBytes);
     return file;
   }
 

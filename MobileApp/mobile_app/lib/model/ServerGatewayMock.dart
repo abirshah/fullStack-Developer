@@ -227,10 +227,10 @@ class ServerGatewayMock extends ServerGateway
 
     return _doAfterDelay(()  async{
       return [
-        CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
+    //    CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
+    //    CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
+    //    CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
+     //   CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
       ];
     });
   }
@@ -240,13 +240,14 @@ class ServerGatewayMock extends ServerGateway
 
     return _doAfterDelay(()  async{
       return [
-        CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
+      //  CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
+      //  CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
+      //  CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
+      //  CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
       ];
     });
   }
+
 
 
   Future<File> getImageFileFromAssets(String assetPath,String destFileName) async {
@@ -257,6 +258,12 @@ class ServerGatewayMock extends ServerGateway
     await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
     return file;
+  }
+
+  @override
+  Future<File> downloadFile(String imageOrVideoUrl) {
+    // TODO: implement downloadFile
+    throw UnimplementedError();
   }
 
 }

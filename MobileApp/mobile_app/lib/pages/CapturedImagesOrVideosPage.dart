@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_general/FutureWidget.dart';
 import 'package:mobile_app/Util.dart';
-import 'package:mobile_app/model/ServerGateway.dart';
 import 'package:mobile_app/model/dto/CapturedImageOrVideo.dart';
-import 'package:mobile_app/pages/VideoPreviewWidget.dart';
-import 'package:video_player/video_player.dart';
+import 'package:mobile_app/router.dart';
 
 class CapturedImagesOrVideosPage extends StatefulWidget {
   
@@ -61,10 +59,7 @@ class _CapturedImagesOrVideosPageState extends State<CapturedImagesOrVideosPage>
 
   Widget buildContent(CapturedImageOrVideo e)
   {
-    if(e.isVideo)
-      return VideoPreviewWidget(e.imageOrVideo);
-    else
-      return  Image.file(e.imageOrVideo);
+    return createRoundedCornerRaisedButton("Prev content",onPress: ()=>goToPage(context,PreviewVideoOrImage, arguments: e));
   }
 
 }
