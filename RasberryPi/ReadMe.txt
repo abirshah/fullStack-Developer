@@ -26,7 +26,18 @@ SN-166 Rasberry Pi needs to send and receive signals to and from the backend (ht
 SN-167 Raspberry Pi needs to stream video to the backend (Demo is uploading...)
 
 
-LAN Endpoints:
+Endpoints:
 Backend: 127.0.0.1:8000 --> 192.0.0.56:8000
 Raspberry PI GPIO: 192.168.0.42:5000
 Raspberry PI Cam Stream: 192.168.0.42:3000
+
+
+
+Door Access
+WebService/app.py open_door() --> RaspberryPi:5000/open
+
+Motion Detection
+RaspberryPi:5000 --> 127.0.0.1:8000/motion WebService/app.py
+
+Video Stream
+RaspberryPi:3000 --> WebService/camera.py cv2.CamVideoStream()
