@@ -24,3 +24,9 @@ SN-121 - As a developer, I want the pet door sensor to be active for 10 seconds 
 SN-166 Rasberry Pi needs to send and receive signals to and from the backend (https://www.youtube.com/watch?v=xEFoWv2WPZY&t=4s&ab_channel=Mike%3APlatinumAudio)
 
 SN-167 Raspberry Pi needs to stream video to the backend (Demo is uploading...)
+
+
+LAN Endpoints:
+Backend: 127.0.0.1:8000 --> 192.0.0.56:8000
+Raspberry PI GPIO: 192.168.0.42:5000
+Raspberry PI Cam Stream: 192.168.0.42:3000
