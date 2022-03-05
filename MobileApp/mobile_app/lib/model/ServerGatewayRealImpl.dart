@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/model/dto/AccessInfo.dart';
 import 'package:mobile_app/model/dto/Admin.dart';
 import 'package:mobile_app/model/dto/CapturedImageOrVideo.dart';
+import 'package:mobile_app/model/dto/Event.dart';
 import 'package:mobile_app/model/dto/NotificationInfo.dart';
 import 'package:mobile_app/model/dto/Pet.dart';
 import 'package:mobile_app/model/dto/PetOwner.dart';
@@ -40,13 +41,15 @@ class ServerGatewayRealImpl extends ServerGateway
   Future<void> initialize() async{
     await getSignedInUser();
     await _saveToFile("info", "{}");
+/*
 
 
     Timer.periodic(Duration(seconds: 3), (timer) {
 
-      _notificationsStreamController.sink.add(NotificationInfo("name ${timer.tick}", "type  ${timer.tick}", "access  ${timer.tick}", "date  ${timer.tick}"));
+      _notificationsStreamController.sink.add(NotificationInfo( "type  ${timer.tick}", "access  ${timer.tick}", "date  ${timer.tick}"));
 
     });
+*/
 
 
     return Future.value();
@@ -157,8 +160,8 @@ class ServerGatewayRealImpl extends ServerGateway
   }
 
   Future<File> getTempFile(String fileName) async {
-    var directory = await getApplicationSupportDirectory();
-    var file = File(directory.path+"/"+fileName);
+    var directory = await getExternalStorageDirectory();
+    var file = File(directory!.path+"/"+fileName);
     return file;
   }
 
@@ -202,25 +205,46 @@ class ServerGatewayRealImpl extends ServerGateway
   @override
   Stream<NotificationInfo> notificationsStream() {
 
+     _extractEventsContent().then((value) async{
+       var list = value.map<NotificationInfo>((e) => NotificationInfo(e.type,e.access,e.date)).toList();
+
+       if(list.isEmpty)
+         return;
+
+       if(list.length>3)
+         list = list.sublist(list.length-3,list.length);
+
+
+       var index = 0;
+       Timer timer ;
+
+       timer = Timer.periodic(Duration(seconds: 1), (timer) {
+
+         if(list.length>index)
+         {
+           _notificationsStreamController.sink.add(list[index]);
+           index++;
+         }else
+           timer.cancel();
+
+       });
+
+
+     });
+
+
     return _notificationsStreamController.stream;
 
   }
 
   @override
-  Future<List<AccessInfo>> fetchAccessInfo() {
-    return _doAfterDelay(() {
-      return [
-        AccessInfo("name 1", "type 1", "access 1", "date 1"),
-        AccessInfo("name 2", "type 2", "access 2", "date 2"),
-        AccessInfo("name 3", "type 3", "access 3", "date 3"),
-        AccessInfo("name 4", "type 4", "access 4", "date 4"),
-        AccessInfo("name 5", "type 5", "access 5", "date 5"),
-        AccessInfo("name 6", "type 6", "access 6", "date 6"),
-        AccessInfo("name 7", "type 7", "access 7", "date 7"),
-        AccessInfo("name 8", "type 8", "access 8", "date 8"),
-        AccessInfo("name 9", "type 9", "access 9", "date 9"),
-      ];
-    });
+  Future<List<AccessInfo>> fetchAccessInfo() async{
+
+    var list = await _extractEventsContent();
+    return list.map<AccessInfo>((e) => AccessInfo(
+        e.type,e.access,e.date
+    )).toList();
+
   }
 
   @override
@@ -235,14 +259,23 @@ class ServerGatewayRealImpl extends ServerGateway
   @override
   Future<List<CapturedImageOrVideo>> fetchCapturedVideos() async {
 
-    var response = await http.get(Uri.parse("http://10.0.2.2:5000/events"));
+    var list = await _extractEventsContent();
+    return list.map<CapturedImageOrVideo>((e) => CapturedImageOrVideo(
+      e.type,e.date,e.fileUrl,true
+    )).toList();
+  }
+
+  Future<List<Event>> _extractEventsContent() async {
+    var response = await http.get(Uri.parse("http://10.0.2.2:8000/events"));
     var eventsList = jsonDecode(response.body) as List;
-    return eventsList.map<CapturedImageOrVideo>((e) {
+    return eventsList.map<Event>((e) {
       var m = e as Map;
       var type = m["classes"].toString();
       var date = m["ts"].toString();
+      var access_granted = m["access_granted"].toString();
+      var id = m["id"].toString();
       var url = "https://video-snapshots.s3.amazonaws.com/"+ m["video"].toString();
-      return  CapturedImageOrVideo(type,date,url,true);
+      return  Event(type,access_granted,date,id,url);
     }).toList();
   }
 

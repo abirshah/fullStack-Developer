@@ -1,18 +1,24 @@
-
-
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_general/FutureWidget.dart';
+import 'package:flutter/material.dart';
+import 'package:mobile_app/Util.dart';
 
-import '../model/ServerGateway.dart';
 import '../model/dto/CapturedImageOrVideo.dart';
-import 'VideoPreviewWidget.dart';
 
-class ImageOrVideoPreviewPage extends StatelessWidget
-{
+class ImageOrVideoPreviewPage extends StatelessWidget {
   final CapturedImageOrVideo e;
+
   ImageOrVideoPreviewPage(this.e);
 
-  build(c)=> FutureWidget(
-      future:ServerGateway.instance().downloadFile(e.imageOrVideoUrl) ,
-      builder: (c,file)=> e.isVideo? VideoPreviewWidget(file):Image.file(file));
+  build(c) => e.isVideo
+      ? createRoundedCornerRaisedButton("preview ${e.imageOrVideoUrl}",
+          onPress: () async {
+          AndroidIntent intent = AndroidIntent(
+            action: 'action_view',
+            data: e.imageOrVideoUrl,
+            type: "video/*",
+          );
+          await intent.launch();
+        })
+      : Image.network(e.imageOrVideoUrl);
 }
