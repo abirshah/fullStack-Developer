@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -26,7 +24,7 @@ class ServerGatewayMock extends ServerGateway
   int delayMillis = 1000;
   UserBase? get signedInUser => _signedInUser;
   UserBase? _signedInUser = null;
-  List<Pet> petsList = [
+  List<Pet> petList = [
     Pet("Pet 1","Dog",[]),
     Pet("Pet 2","Cat",[]),
     Pet("Pet 3","Frog",[]),
