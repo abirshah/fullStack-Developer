@@ -6,13 +6,13 @@ import 'package:flutter_general/Utils.dart';
 
 
 createRoundedCornerRaisedButton(String title,
-        {EdgeInsetsGeometry padding = EdgeInsets.zero,
+        {EdgeInsetsGeometry padding =const EdgeInsets.all(10.0),
         Color shapeColor = const Color(0xff4691d5),
         Color borderColor = Colors.transparent,
         Color textColor = Colors.white,
         String fontFamily = "PTSansCaption",
         double cornerRadius = 10,
-        double fontSize = 10,
+        double fontSize = 13,
         void Function()? onPress,
         double minWidth = double.infinity,
         double height = 36}) =>
