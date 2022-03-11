@@ -6,7 +6,7 @@ import sys
 import matplotlib.pyplot as plt
 import os
 
-def getBoxDimensions(size, box):
+def convert(size, box):
     dw = 1./size[0]
     dh = 1./size[1]
     x = (box[0] + box[1])/2.0
@@ -82,7 +82,7 @@ def main():
             if not(bb == []):
                 file = open(newpath + '/' + textfile_name + '.txt', "a")
                 file.write(str(counter) + " ")
-                for boxIndex in range(len(bb)-1):
+                for b in range(len(bb)-1):
                     file.write(str(round(bb[b], 6)) + " ")
                 file.write(str(round(bb[len(bb)-1], 6))+ "\n")
                 file.close()
