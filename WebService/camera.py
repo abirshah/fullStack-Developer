@@ -11,8 +11,8 @@ from notification_service import NotificationService
 
 class Video(object):
     def __init__(self, queueSize=128, cameraSource=0, timeout=0):
-        self.video = CamVideoStream(0)
-        time.sleep(10)
+        self.video = CamVideoStream(1)
+        time.sleep(1)
         self.video.start()
         # network to coco weight file and cfg file
         self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
@@ -22,8 +22,7 @@ class Video(object):
                                                         'weight_files/yolov4-custom_bird_mail_new.weights')
 
         # network to the user pets custom yolov4 wight file and cfg file
-       # self.net_user_pet = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_user_pets.cfg',
-        #                                               'weight_files/yolov4-custom_user_pets.weights')
+        self.net_user_pet = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom_user_pets.cfg', 'weight_files/yolov4-custom_user_pets.weights')
         self.keyClipSerivce = KeyClipService(bufSize=32)
         self.consecFrames = 0
         self.pet_detection = petDetection()
@@ -46,7 +45,7 @@ class Video(object):
         mail_bird_classes = self.pet_detection.getClasses('names_files/mail-bird.names')
 
         # reading the user_pets.names file.
-       # user_pets_classes = self.pet_detection.getClasses('names_files/user_pets.names')
+        user_pets_classes = self.pet_detection.getClasses('names_files/user_pets.names')
         # get the height and width
         height, width, _ = frame.shape
         blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
@@ -54,14 +53,13 @@ class Video(object):
         # self.net.setInput(blob)
         self.net_coco.setInput(blob)
         self.net_mail_bird.setInput(blob)
-   #     self.net_user_pet.setInput(blob)
+        self.net_user_pet.setInput(blob)
 
         # Getting the bonding boxes, confidence for each box, and class ids
         boxes_coco, confidences_coco, class_ids_coco = self.pet_detection.getNumbers(self.net_coco, width, height)
         boxes_mail_bird, confidences_mail_bird, class_ids_mail_bird = self.pet_detection.getNumbers(self.net_mail_bird,
                                                                                                     width, height)
-      #  boxes_user_pets, confidences_user_pets, class_ids_user_pets = self.pet_detection.getNumbers(self.net_user_pet,
-       #                                                                                             width, height)
+        boxes_user_pets, confidences_user_pets, class_ids_user_pets = self.pet_detection.getNumbers(self.net_user_pet, width, height)
 
         # indexes_coco will be empty if there is no objects are detected in the image
         indexes_coco = cv2.dnn.NMSBoxes(boxes_coco, confidences_coco, .5, .4)
@@ -169,13 +167,15 @@ class Video(object):
                 timestamp = datetime.datetime.now()
                 p = "{}/{}.mp4".format('tmp', timestamp.strftime("%Y%m%d-%H%M%S"))
                 f = "{}.mp4".format(timestamp.strftime("%Y%m%d-%H%M%S"))
-              #  self.keyClipSerivce.start(p, f, labels, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20, width, height,
-               #                           user_pets_classes)
+                self.keyClipSerivce.start(p, f, labels, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), 20, width, height, user_pets_classes)
 
         if updateConsecFrames:
             self.consecFrames += 1
         self.keyClipSerivce.update(frame)
-        if self.keyClipSerivce.recording and self.consecFrames == 32:
+        print(self.consecFrames)
+        print(self.keyClipSerivce.recording)
+        if self.keyClipSerivce.recording and self.consecFrames == 16:
+            print("calling finish")
             self.keyClipSerivce.finish()
 
         ret, jpg = cv2.imencode('.jpg', frame)
