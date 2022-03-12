@@ -172,7 +172,10 @@ class Video(object):
         if updateConsecFrames:
             self.consecFrames += 1
         self.keyClipSerivce.update(frame)
-        if self.keyClipSerivce.recording and self.consecFrames == 16:
+        print(self.consecFrames)
+        print(self.keyClipSerivce.recording)
+        if self.keyClipSerivce.recording and self.consecFrames == 6:
+            print("calling finish")
             self.keyClipSerivce.finish()
 
         ret, jpg = cv2.imencode('.jpg', frame)

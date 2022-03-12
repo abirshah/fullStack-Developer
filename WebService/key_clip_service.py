@@ -9,6 +9,7 @@ from notification_service import NotificationService
 import mysql.connector
 import time
 import cv2
+import datetime
 
 DATABASE_CONNECTION_INFO = 'mysql://admin:abir1971@pet-project.cqlvbpbplnsv.us-east-2.rds.amazonaws.com/automated_pet_door'
 
@@ -80,6 +81,7 @@ class KeyClipService:
         self.flush()
         self.writer.release()
         self.save_key_event_clip()
+        self.save_image_frame()
         self.outputPath = None
         self.outputFile = None
         self.labels = None
@@ -100,3 +102,14 @@ class KeyClipService:
             db_session = self.DBSession
             db_session.add(new_event)
             db_session.commit()
+
+    def save_image_frame(self):
+        if self.frames is not None:
+            if self.frames[0] is not None:
+                image = self.frames[len(self.frames) - 1]
+                timestamp = datetime.datetime.now()
+                p = "{}/{}.jpg".format('tmp', timestamp.strftime("%Y%m%d-%H%M%S"))
+                f = "{}.jpg".format(timestamp.strftime("%Y%m%d-%H%M%S"))
+                cv2.imwrite(p, image)
+                result = self.s3_service.upload_file('image-snapshots', p, f)
+
