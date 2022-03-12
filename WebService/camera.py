@@ -11,8 +11,8 @@ from notification_service import NotificationService
 
 class Video(object):
     def __init__(self, queueSize=128, cameraSource=0, timeout=0):
-        self.video = CamVideoStream(1)
-        time.sleep(1)
+        self.video = CamVideoStream(0)
+        time.sleep(10)
         self.video.start()
         # network to coco weight file and cfg file
         self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
