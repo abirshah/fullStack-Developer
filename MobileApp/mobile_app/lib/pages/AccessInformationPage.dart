@@ -43,7 +43,6 @@ class _AccessInformationPageState extends State<AccessInformationPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        halveticaText("name : ${e.name}"),
         halveticaText("type : ${e.type}"),
         halveticaText("access : ${e.access}"),
         halveticaText("date : ${e.date}"),

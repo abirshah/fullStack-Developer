@@ -78,6 +78,7 @@ class Video(object):
         # reading the classes.names file
         self.body_parts_classes = self.pet_detection.getClasses('names_files/classes.names')
 
+
     def get_boxes_details(self, height, width):
         # Getting the bonding boxes, confidence for each box, and class ids
         self.boxes_coco, self.confidences_coco, self.class_ids_coco = self.pet_detection.getNumbers(self.net_coco,

@@ -2,6 +2,8 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:mobile_app/model/ServerGatewayRealImpl.dart';
 import 'package:mobile_app/model/dto/AccessInfo.dart';
 import 'package:mobile_app/model/dto/CapturedImageOrVideo.dart';
 import 'package:mobile_app/model/dto/NotificationInfo.dart';
@@ -20,8 +22,8 @@ abstract class ServerGateway{
   {
     if(_instance == null)
       {
-      //  _instance = ServerGatewayImplementation();
-        _instance = ServerGatewayMock();
+        _instance = ServerGatewayRealImpl();
+        //_instance = ServerGatewayMock();
       }
 
     return _instance!;
@@ -45,5 +47,7 @@ abstract class ServerGateway{
   Stream<NotificationInfo> notificationsStream();
 
   Future<void> addPet(Pet pet) ;
+
+  Future<File> downloadFile(String imageOrVideoUrl) ;
 
 }

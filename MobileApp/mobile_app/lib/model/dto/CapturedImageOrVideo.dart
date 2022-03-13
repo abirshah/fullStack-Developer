@@ -6,9 +6,9 @@ class CapturedImageOrVideo
 {
   String type = "";
   String date = "";
-  File imageOrVideo;
+  String imageOrVideoUrl;
   bool isVideo;
 
 
-  CapturedImageOrVideo(this.type, this.date, this.imageOrVideo,this.isVideo);
+  CapturedImageOrVideo(this.type, this.date, this.imageOrVideoUrl,this.isVideo);
 }

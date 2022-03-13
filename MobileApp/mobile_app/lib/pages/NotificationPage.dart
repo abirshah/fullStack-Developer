@@ -57,7 +57,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        halveticaText("name : ${e.name}"),
         halveticaText("type : ${e.type}"),
         halveticaText("access : ${e.access}"),
         halveticaText("date : ${e.date}"),

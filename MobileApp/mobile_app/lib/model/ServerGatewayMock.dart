@@ -43,7 +43,7 @@ class ServerGatewayMock extends ServerGateway
 
     Timer.periodic(Duration(seconds: 3), (timer) {
 
-      _notificationsStreamController.sink.add(NotificationInfo("name ${timer.tick}", "type  ${timer.tick}", "access  ${timer.tick}", "date  ${timer.tick}"));
+      _notificationsStreamController.sink.add(NotificationInfo( "type  ${timer.tick}", "access  ${timer.tick}", "date  ${timer.tick}"));
 
     });
 
@@ -209,15 +209,15 @@ class ServerGatewayMock extends ServerGateway
   Future<List<AccessInfo>> fetchAccessInfo() {
     return _doAfterDelay(() {
       return [
-        AccessInfo("name 1", "type 1", "access 1", "date 1"),
-        AccessInfo("name 2", "type 2", "access 2", "date 2"),
-        AccessInfo("name 3", "type 3", "access 3", "date 3"),
-        AccessInfo("name 4", "type 4", "access 4", "date 4"),
-        AccessInfo("name 5", "type 5", "access 5", "date 5"),
-        AccessInfo("name 6", "type 6", "access 6", "date 6"),
-        AccessInfo("name 7", "type 7", "access 7", "date 7"),
-        AccessInfo("name 8", "type 8", "access 8", "date 8"),
-        AccessInfo("name 9", "type 9", "access 9", "date 9"),
+        AccessInfo( "type 1", "access 1", "date 1"),
+        AccessInfo( "type 2", "access 2", "date 2"),
+        AccessInfo( "type 3", "access 3", "date 3"),
+        AccessInfo( "type 4", "access 4", "date 4"),
+        AccessInfo( "type 5", "access 5", "date 5"),
+        AccessInfo( "type 6", "access 6", "date 6"),
+        AccessInfo( "type 7", "access 7", "date 7"),
+        AccessInfo( "type 8", "access 8", "date 8"),
+        AccessInfo( "type 9", "access 9", "date 9"),
       ];
     });
   }
@@ -227,10 +227,10 @@ class ServerGatewayMock extends ServerGateway
 
     return _doAfterDelay(()  async{
       return [
-        CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
-        CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
+    //    CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
+    //    CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
+    //    CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
+     //   CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/images/pet_store.png","pet_store.png"),false),
       ];
     });
   }
@@ -240,13 +240,14 @@ class ServerGatewayMock extends ServerGateway
 
     return _doAfterDelay(()  async{
       return [
-        CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
-        CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
+      //  CapturedImageOrVideo("name 1", "date 1", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
+      //  CapturedImageOrVideo("name 2", "date 2", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
+      //  CapturedImageOrVideo("name 3", "date 3", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
+      //  CapturedImageOrVideo("name 4", "date 4", await getImageFileFromAssets("assets/videos/bee.mp4","pet_store.png"),true),
       ];
     });
   }
+
 
 
   Future<File> getImageFileFromAssets(String assetPath,String destFileName) async {
@@ -257,6 +258,12 @@ class ServerGatewayMock extends ServerGateway
     await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
     return file;
+  }
+
+  @override
+  Future<File> downloadFile(String imageOrVideoUrl) {
+    // TODO: implement downloadFile
+    throw UnimplementedError();
   }
 
 }
