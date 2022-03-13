@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 # the main method
 def main():
-    pd = petDetection()
+    petDetect = petDetection()
     # network to coco weight file and cfg file
     net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
     # network to the mail packages and bird in the mouth custom yolov4 wight file and cfg file
@@ -21,13 +21,13 @@ def main():
     mail_bird_classes = pd.getClasses('names_files/mail-bird.names')
 
     # Reading the image you are testing
-    my_img = cv2.imread('test_images/cat.jpg')
-    my_img = cv2.resize(my_img, (800, 600))
+    testing_input_image = cv2.imread('test_images/cat.jpg')
+    resized_testing_input_image = cv2.resize(testing_input_image, (800, 600))
 
-    plt.imshow(my_img)
+    plt.imshow(resized_testing_input_image)
     # getting the height and width of the image.
-    height, width, _ = my_img.shape
-    blob = cv2.dnn.blobFromImage(my_img, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
+    height, width, _ = resized_testing_input_image.shape
+    blob = cv2.dnn.blobFromImage(resized_testing_input_image, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
 
     net_coco.setInput(blob)
     net_mail_bird.setInput(blob)
@@ -49,7 +49,7 @@ def main():
     for i in indexes_coco.flatten():
         if str(coco_classes[class_ids_coco[i]]) == 'bird' or str(coco_classes[class_ids_coco[i]]) == 'person':
             pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
-                                   confidences=confidences_coco, my_img=my_img, color=(0, 0, 255))
+                                   confidences=confidences_coco, resized_testing_input_image=resized_testing_input_image, color=(0, 0, 255))
             print(str(coco_classes[class_ids_coco[i]]) + " found near by")
 
         if not len(indexes_mail_bird) == 0:
@@ -57,18 +57,18 @@ def main():
                 if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
                     pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                            class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
-                                           my_img=my_img, color=(0, 0, 255))
+                                           resized_testing_input_image=resized_testing_input_image, color=(0, 0, 255))
                     print("Mail package found on the door")
                 elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(
                         coco_classes[class_ids_coco[i]]) == 'cat':
                     pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                            class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
-                                           my_img=my_img, color=(0, 0, 255))
+                                           resized_testing_input_image=resized_testing_input_image, color=(0, 0, 255))
                     print('Bird found in the pets mouth')
 
         if str(coco_classes[class_ids_coco[i]]) == 'cat' or str(coco_classes[class_ids_coco[i]]) == 'dog':
             pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
-                                   confidences=confidences_coco, my_img=my_img, color=(0, 255, 0))
+                                   confidences=confidences_coco, resized_testing_input_image=resized_testing_input_image, color=(0, 255, 0))
             # This stores the sze of each bounding box into a dictionary
             x, y, w, h = boxes_coco[i]
             pd.addingSizeOfBoundingBoxes(str(coco_classes[class_ids_coco[i]]), w * h)
@@ -103,14 +103,14 @@ def main():
                     color = colors[k]
                     pd.draw_bounding_boxes(boxes=boxes_body_parts, index=k, classes=body_parts_classes,
                                            class_ids=class_ids_body_parts, confidences=confidences_body_parts,
-                                           my_img=my_img, color=color)
+                                           resized_testing_input_image=resized_testing_input_image, color=color)
 
                 for (class_name, center) in pd.centroid_dictionary.items():
                     if len(center) == 2:
                         dx, dy = center[0][0] - center[1][0], center[0][1] - center[1][1]
                         distance = math.sqrt(dx * dx + dy * dy)
                         pd.addingDistance(class_name, distance)
-                        cv2.line(my_img, (int(center[0][0]), int(center[0][1])), (int(center[1][0]), int(center[1][1])),
+                        cv2.line(resized_testing_input_image, (int(center[0][0]), int(center[0][1])), (int(center[1][0]), int(center[1][1])),
                                  (255, 255, 255), thickness=2)
 
             else:
@@ -121,7 +121,7 @@ def main():
     print(pd.distance_dictionary)
     ratio_dictionary = pd.gettingRatio()
     print(ratio_dictionary)
-    cv2.imshow('img', my_img)
+    cv2.imshow('img', resized_testing_input_image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
