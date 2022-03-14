@@ -13,7 +13,7 @@ class Video(object):
     def __init__(self, queueSize=128, cameraSource=0, timeout=0):
         self.labels = list()
         self.video = CamVideoStream(0)
-        time.sleep(10)
+        time.sleep(9)
         self.video.start()
         # network to coco weight file and cfg file
         self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
@@ -28,7 +28,6 @@ class Video(object):
 
         self.net_body_parts = cv2.dnn.readNetFromDarknet('cfg_files/yolov4-custom.cfg',
                                                          'weight_files/yolov4-custom_10000.weights')
-
         self.keyClipSerivce = KeyClipService(bufSize=32)
         self.consecFrames = 0
         self.pet_detection = petDetection()
@@ -226,7 +225,7 @@ class Video(object):
         if updateConsecFrames:
             self.consecFrames += 1
         self.keyClipSerivce.update(frame)
-        if self.keyClipSerivce.recording and self.consecFrames == 32:
+        if self.keyClipSerivce.recording and self.consecFrames == 6:
             self.keyClipSerivce.finish()
 
         ret, jpg = cv2.imencode('.jpg', frame)
