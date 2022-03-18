@@ -175,7 +175,7 @@ class Video(object):
         if not len(self.indexes_user_pets) == 0:
             for j in self.indexes_user_pets.flatten():
                 pet_name = self.user_pets_classes[self.class_ids_user_pets[j]]
-                print(pet_name, " :User pet was detected")
+                print(pet_name, ": User pet was detected")
                 self.notification.send_notification(pet_name + " Detected", self.email,
                                                     "Detect at time: " + datetime.datetime.now().strftime(
                                                         "%Y/%m/%d-%H:%M:%S"))
