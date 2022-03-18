@@ -13,7 +13,7 @@ class Video(object):
     def __init__(self, queueSize=128, cameraSource=0, timeout=0):
         self.labels = list()
         self.video = CamVideoStream(0)
-        time.sleep(9)
+        time.sleep(4)
         self.video.start()
         # network to coco weight file and cfg file
         self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
@@ -171,32 +171,46 @@ class Video(object):
         else:
             print("No body part was recognized by the model")
 
-    def detecting_cats_and_dogs(self, frame):
+    def detecting_cats_and_dogs(self, frame, index):
         if not len(self.indexes_user_pets) == 0:
             for j in self.indexes_user_pets.flatten():
-                print("User pet was detected")
-                self.pet_detection.draw_bounding_boxes(boxes=self.boxes_mail_bird, index=j,
+                pet_name = self.user_pets_classes[self.class_ids_user_pets[j]]
+                print(pet_name, " :User pet was detected")
+                self.notification.send_notification(pet_name + " Detected", self.email,
+                                                    "Detect at time: " + datetime.datetime.now().strftime(
+                                                        "%Y/%m/%d-%H:%M:%S"))
+                self.pet_detection.draw_bounding_boxes(boxes=self.boxes_user_pets, index=j,
                                                        classes=self.user_pets_classes,
                                                        class_ids=self.class_ids_user_pets,
                                                        confidences=self.confidences_user_pets, my_img=frame,
                                                        color=(0, 255, 0), labels=self.labels)
-        # This stores the size of each bounding box into a dictionary
-        x, y, w, h = self.boxes_coco[i]
-        # Adding bounding box sizes and proportion of the cat or dog detected
-        self.pet_detection.addingSizeOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[i]]), w * h)
-        self.pet_detection.addingProportionsOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[i]]),
-                                                            w, h)
-
+        else:
+            print(self.coco_classes[self.class_ids_coco[index]], " was detected")
+            self.pet_detection.draw_bounding_boxes(boxes=self.boxes_coco, index=index,
+                                                   classes=self.coco_classes,
+                                                   class_ids=self.class_ids_coco,
+                                                   confidences=self.confidences_coco, my_img=frame,
+                                                   color=(0, 255, 0), labels=self.labels)
         self.detecting_dogs_and_cats_body_parts(frame)
+
+    def recording_bounding_details(self, index):
+        # This stores the size of each bounding box into a dictionary
+        x, y, w, h = self.boxes_coco[index]
+        # Adding bounding box sizes and proportion of the cat or dog detected
+        self.pet_detection.addingSizeOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[index]]), w * h)
+        self.pet_detection.addingProportionsOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[index]]), w, h)
+
 
     def get_frame(self):
         frame = self.video.read()
         # resize the  image
-        frame = cv2.resize(frame, (1280, 720))
+        #frame = cv2.resize(frame, (1280, 720))
         updateConsecFrames = True
         # get the height and width
         height, width, _ = frame.shape
-        blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
+        #blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
+        blob = cv2.dnn.blobFromImage(frame, 1 / 255, (640, 640), (0, 0, 0), swapRB=True, crop=False)
+
         self.get_classes()
         self.setting_input(blob)
         self.get_boxes_details(height, width)
@@ -208,11 +222,10 @@ class Video(object):
                 self.detecting_birds_and_person(i, frame)
                 # METHOD CALL
                 self.detecting_birds_and_mail_package(i, frame)
-
                 if str(self.coco_classes[self.class_ids_coco[i]]) == 'cat' or \
                         str(self.coco_classes[self.class_ids_coco[i]]) == 'dog':
                     # METHOD CALL
-                    self.detecting_cats_and_dogs(frame)
+                    self.detecting_cats_and_dogs(frame, i)
 
             self.consecFrames = 0
             if not self.keyClipSerivce.recording:
