@@ -6,7 +6,11 @@ import os
 from flask import Flask, redirect, url_for, render_template
 import urllib.request
 
-
+LocalHostIp = "127.0.0.1"
+RasPiIp = "192.168.0.61"
+RasPiPort = "5000"
+BackendServerIp = "192.168.0.60"
+BackendServerPort = "8000"
 green_led = LED(4)
 red_led = LED(22)
 blue_led = LED(26)
@@ -14,7 +18,6 @@ motion_detector = MotionSensor(12)
 green_led.off()
 red_led.on()
 blue_led.off()
-
 timestamp = time.strftime("%y%b%d%H%M%S")
 print("System activated at " + timestamp)
 
@@ -32,15 +35,18 @@ def open_door():
 
 def sense_motion():
     while True:
+        blue_led.off()
         motion_detector.wait_for_motion() 
         timestamp = time.strftime("%y%b%d%H%M%S")
         print("Motion Detector Triggered " + timestamp)
         try:
-            urllib.request.urlopen("http://192.168.0.56:8000/motion/" + timestamp)
+            urllib.request.urlopen("http://192.168.0.60:8000/motion/" + timestamp)
         except:
             print("Error sending motion detection timestamp")
-        time.sleep(0.8)
-        sense_motion()
+            print("http://" + BackendServerIp +":"+ BackendServerPort + "/motion/" + timestamp)
+        blue_led.on()
+        time.sleep(10.0)
+        blue_led.off()
     
 
 @app.route('/')
@@ -61,12 +67,12 @@ def submitbutton():
 
 
 # Start Network Video Stream
-os.popen('sh /home/pi/capstone/fullStack-Developer/RasberryPi/LaunchVideoStream.sh')
+#os.popen('sh /home/pi/capstone/fullStack-Developer/RasberryPi/LaunchVideoStream.sh')
 print("Streaming video from Pi Cam")
 print("Running server on RaspberryPI")
 motion_sensor_thread = threading.Thread(target=sense_motion)
 motion_sensor_thread.start()
 
-app.run(host='192.168.0.42', port=5000)
+app.run(host=RasPiIp, port=RasPiPort)
 
-
+ 
