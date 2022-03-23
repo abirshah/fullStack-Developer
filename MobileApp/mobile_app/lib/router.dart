@@ -61,10 +61,10 @@ MaterialPageRoute router(RouteSettings settings)
 
 
     case CapturedImagesPath:
-      return _createRoute(CapturedImagesOrVideosPage(ServerGateway.instance().fetchCapturedImages()));
+      return _createRoute(CapturedImagesOrVideosPage(ServerGateway.instance().fetchCapturedImages(),false));
 
     case CapturedVideosPath:
-      return _createRoute(CapturedImagesOrVideosPage(ServerGateway.instance().fetchCapturedVideos()));
+      return _createRoute(CapturedImagesOrVideosPage(ServerGateway.instance().fetchCapturedVideos(),true));
 
     default:
       return _createRoute(Center(child: Text("Unknown Page")));

@@ -51,6 +51,7 @@ class SplashPageState extends State<SplashPage> {
       else
         replaceTopPageWith(context, LoginPagePath);
 
-    }).then((value) => null);
+
+    });
   }
 }
