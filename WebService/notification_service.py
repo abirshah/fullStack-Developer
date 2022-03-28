@@ -7,7 +7,7 @@ class NotificationService:
     def __init__(self):
         self.notification = None
         self.start_time = None
-        self.detected_objects = list
+        self.detected_objects = list()
 
     def send_notification(self, subject, receiver_email, content, detected_object):
         if self.timer(detected_object):
@@ -24,9 +24,10 @@ class NotificationService:
     def timer(self, detected_object):
         if self.start_time is None:
             self.start_timer()
+            self.detected_objects.append(detected_object)
             return True
         elapsed_time = time.perf_counter() - self.start_time
-        if not detected_object in self.detected_objects:
+        if detected_object not in self.detected_objects:
             self.detected_objects.append(detected_object)
             return True
         if elapsed_time >= 60:

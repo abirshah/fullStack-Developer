@@ -28,7 +28,7 @@ class KeyClipService:
         self.s3_service = S3Service()
         self.outputPath = None
         self.outputFile = None
-        self.pet_detected_counter = list
+        self.pet_detected_counter = list()
         self.labels = []
         self.db_engine = create_engine(DATABASE_CONNECTION_INFO, echo=False)
         self.DBSession = scoped_session(
