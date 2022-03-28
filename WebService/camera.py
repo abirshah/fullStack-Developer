@@ -112,7 +112,8 @@ class Video(object):
             print(str(self.coco_classes[self.class_ids_coco[index]]) + " found near by")
             self.notification.send_notification(str(self.coco_classes[self.class_ids_coco[index]]) + " Detected",
                                                 self.email, "Detect at time: " +
-                                                datetime.datetime.now().strftime("%Y/%m/%d-%H:%M:%S"))
+                                                datetime.datetime.now().strftime("%Y/%m/%d-%H:%M:%S"),
+                                                self.coco_classes[self.class_ids_coco[index]])
 
     def detecting_birds_and_mail_package(self, index, frame):
         if not len(self.indexes_mail_bird) == 0:
@@ -120,7 +121,7 @@ class Video(object):
                 if str(self.mail_bird_classes[self.class_ids_mail_bird[j]]) == 'mailing_package':
                     self.notification.send_notification("Mailing Package Detected", self.email,
                                                         "Detect at time: " + datetime.datetime.now().strftime(
-                                                            "%Y/%m/%d-%H:%M:%S"))
+                                                            "%Y/%m/%d-%H:%M:%S"), "Mailing Package")
                     self.pet_detection.draw_bounding_boxes(boxes=self.boxes_mail_bird, index=j,
                                                            classes=self.mail_bird_classes,
                                                            class_ids=self.class_ids_mail_bird,
@@ -130,7 +131,7 @@ class Video(object):
                         self.coco_classes[self.class_ids_coco[index]]) == 'cat':
                     self.notification.send_notification("Bird in pets mouth Detected", self.email,
                                                         "Detect at time: " + datetime.datetime.now().strftime(
-                                                            "%Y/%m/%d-%H:%M:%S"))
+                                                            "%Y/%m/%d-%H:%M:%S"), "bird_in_cat_mouth")
                     self.pet_detection.draw_bounding_boxes(boxes=self.boxes_mail_bird, index=j,
                                                            classes=self.mail_bird_classes,
                                                            class_ids=self.class_ids_mail_bird,
@@ -175,23 +176,29 @@ class Video(object):
         if not len(self.indexes_user_pets) == 0:
             for j in self.indexes_user_pets.flatten():
                 pet_name = self.user_pets_classes[self.class_ids_user_pets[j]]
-                print(pet_name, ": User pet was detected")
-                self.notification.send_notification(pet_name + " Detected", self.email,
-                                                    "Detect at time: " + datetime.datetime.now().strftime(
-                                                        "%Y/%m/%d-%H:%M:%S"))
-                self.pet_detection.draw_bounding_boxes(boxes=self.boxes_user_pets, index=j,
-                                                       classes=self.user_pets_classes,
-                                                       class_ids=self.class_ids_user_pets,
-                                                       confidences=self.confidences_user_pets, my_img=frame,
-                                                       color=(0, 255, 0), labels=self.labels)
+                if pet_name == "Tom" or pet_name == "Hilly" or pet_name == "Doug":
+                    print(pet_name, ": User pet was detected")
+                    self.notification.send_notification(pet_name + " Detected", self.email,
+                                                        "Detect at time: " + datetime.datetime.now().strftime(
+                                                            "%Y/%m/%d-%H:%M:%S"), pet_name)
+                    self.pet_detection.draw_bounding_boxes(boxes=self.boxes_user_pets, index=j,
+                                                           classes=self.user_pets_classes,
+                                                           class_ids=self.class_ids_user_pets,
+                                                           confidences=self.confidences_user_pets, my_img=frame,
+                                                           color=(0, 255, 0), labels=self.labels)
         else:
-            print(self.coco_classes[self.class_ids_coco[index]], " was detected")
+            unknown_pet_name = self.coco_classes[self.class_ids_coco[index]]
+            print(unknown_pet_name, " was detected")
+            self.notification.send_notification("An unknown " + unknown_pet_name +
+                                                " Detected", self.email, "Detect at time: " +
+                                                datetime.datetime.now().strftime(
+                                                    "%Y/%m/%d-%H:%M:%S"), unknown_pet_name)
             self.pet_detection.draw_bounding_boxes(boxes=self.boxes_coco, index=index,
                                                    classes=self.coco_classes,
                                                    class_ids=self.class_ids_coco,
                                                    confidences=self.confidences_coco, my_img=frame,
                                                    color=(0, 255, 0), labels=self.labels)
-        self.detecting_dogs_and_cats_body_parts(frame)
+        #self.detecting_dogs_and_cats_body_parts(frame)
 
     def recording_bounding_details(self, index):
         # This stores the size of each bounding box into a dictionary
@@ -204,12 +211,12 @@ class Video(object):
     def get_frame(self):
         frame = self.video.read()
         # resize the  image
-        #frame = cv2.resize(frame, (1280, 720))
+        frame = cv2.resize(frame, (1280, 720))
         updateConsecFrames = True
         # get the height and width
         height, width, _ = frame.shape
-        #blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
-        blob = cv2.dnn.blobFromImage(frame, 1 / 255, (640, 640), (0, 0, 0), swapRB=True, crop=False)
+        blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
+        #blob = cv2.dnn.blobFromImage(frame, 1 / 255, (640, 640), (0, 0, 0), swapRB=True, crop=False)
 
         self.get_classes()
         self.setting_input(blob)
