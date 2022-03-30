@@ -1,0 +1,37 @@
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Capstone - Automated Pet Door - Index</title>
+  </head>
+  
+  <body>
+  
+      <h1>Automated Pet Door</h1>
+  
+      <h3>Door Control</h3>
+      
+      <a href="http://169.254.235.178:5000/open.html"><h4>Open Door With Link</h4></a>
+  
+      <h4>Open Door With Forum</h4>
+      <form action="/submitbutton" method="POST">
+          <input type="submit" name="submit" value="open">
+      </form>
+      
+      <script>
+          function openDoor(){
+              const httpRequest = new XMLHttpRequest();
+              const url = "http://169.254.235.178:5000/open.html";
+              httpRequest.open("GET", url);
+              httpRequest.send();
+          }
+      </script>
+      
+      <h3>Motion Detection Log</h3>
+     
+      
+  </body>
+  
+</html>
+
