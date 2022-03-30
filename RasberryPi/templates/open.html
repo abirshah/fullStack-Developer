@@ -12,8 +12,21 @@
   
       <h3>Door Control</h3>
       
-      <a href="http://192.168.0.42:5000/open.html"><h4>Open Door With Link</h4></a>
+      <a href="http://169.254.235.178:5000/open.html"><h4>Open Door With Link</h4></a>
   
+      <h4>Open Door With Forum</h4>
+      <form action="/submitbutton" method="POST">
+          <input type="submit" name="submit" value="open">
+      </form>
+      
+      <script>
+          function openDoor(){
+              const httpRequest = new XMLHttpRequest();
+              const url = "http://169.254.235.178:5000/open.html";
+              httpRequest.open("GET", url);
+              httpRequest.send();
+          }
+      </script>
       
       <h3>Motion Detection Log</h3>
      
