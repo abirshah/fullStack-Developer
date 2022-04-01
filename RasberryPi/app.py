@@ -42,7 +42,7 @@ def sense_motion():
         print("Motion Detector Triggered " + timestamp)
         try:
             urllib.request.urlopen("http://169.254.135.232:8000/motion/" + timestamp)
-        except:
+        except Exception as e:
             print("Error sending motion detection timestamp")
             print("http://" + BackendServerIp +":"+ BackendServerPort + "/motion/" + timestamp)
         blue_led.on()
