@@ -192,7 +192,6 @@ class Video(object):
     def get_frame(self):
         frame = self.video.read()
         # resize the  image
-        print(frame)
         frame = cv2.resize(frame, (1280, 720))
         updateConsecFrames = True
         # get the height and width
