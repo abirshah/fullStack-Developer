@@ -10,17 +10,7 @@ import os.path
 from Services.s3_service import S3Service
 from Config import config
 import urllib.request
-
-db = SQLAlchemy()
-
-motion_log = []
-
-def open_door():
-    print("opening door")
-    try:
-        urllib.request.urlopen('http://172.30.145.44:5000/open.html')
-    except:
-        print("Error opening URL to send door activation signal")
+from door_service import Door
 
 db = SQLAlchemy()
 
@@ -29,7 +19,7 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
         cfg = config.Config()
     app = Flask(__name__, template_folder="templates")
     app.config.from_object(cfg)
-
+    door = Door()
     CORS(app)
     basedir = os.path.abspath(os.path.dirname(__file__))
     # Init db
@@ -70,13 +60,13 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
         s3_service = S3Service()
         response = s3_service.generate_url(bucket='video-snapshots', key=video_key)
         return jsonify({'videoUrl': response})
-		
+
     @app.route('/motion/<timestamp>')
     def motion_detection(timestamp):
-        motion_log.append(timestamp)
+        door.motion_log.append(timestamp)
         print("motion detected at: " + timestamp)
         return render_template('index.html')
-        #return (f" Motion Detected at: " + timestamp)
+        # return (f" Motion Detected at: " + timestamp)
 
     def gen(camera):
         while True:
@@ -89,18 +79,18 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
     def video():
         return Response(gen(Video(cameraSource=app.config.get("CAMERA"))),
                         mimetype='multipart/x-mixed-replace; boundary=frame')
-						
+
     @app.route('/open.html')
     def goHome():
         return render_template('index.html')
-		
-		
+
     @app.route('/submitbutton', methods=['POST'])
     def submitbutton():
-        open_door()
+        door.open_door()
         return render_template('index.html')
 
     return app
+
 
 if __name__ == "__main__":
     s3_service = S3Service()
@@ -120,6 +110,6 @@ if __name__ == "__main__":
     app = create_app()
     app.run(host='127.0.0.1', port=8000)
     # Home local network
-    #app.run(host='192.168.0.56', port=8000)
+    # app.run(host='192.168.0.56', port=8000)
     # Concordia network
-    #app.run(host='172.31.113.255', port=8000)
+    # app.run(host='172.31.113.255', port=8000)

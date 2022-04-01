@@ -11,12 +11,12 @@ from notification_service import NotificationService
 
 class Video(object):
     def __init__(self, queueSize=128, cameraSource=0, timeout=0):
-        try:
-            self.video = CamVideoStream('http://169.254.235.178:3000/')
-            print("Connected to PiCam")
-        except:
+        self.video = CamVideoStream('http://169.254.235.178:3000/')
+        if self.video.stream is None or not self.video.stream.isOpened():
             self.video = CamVideoStream(0)
             print("Connected to the device's web-cam")
+        else:
+            print("Connected to PiCam")
         time.sleep(3)
         self.labels = list()
         self.video.start()
