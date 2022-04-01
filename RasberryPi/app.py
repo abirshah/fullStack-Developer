@@ -11,6 +11,8 @@ RasPiIp = "169.254.235.178"
 RasPiPort = "5000"
 BackendServerIp = "169.254.135.232"
 BackendServerPort = "8000"
+RasPiHomepage = 'index.html'
+
 green_led = LED(4)
 red_led = LED(22)
 blue_led = LED(26)
@@ -51,19 +53,19 @@ def sense_motion():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template(RasPiHomepage)
 
 
 @app.route('/open.html')
 def open():
     open_door()
-    return render_template('index.html')
+    return render_template(RasPiHomepage)
 
 
 @app.route('/submitbutton', methods=['POST'])
 def submitbutton():
     open_door()
-    return render_template('index.html')
+    return render_template(RasPiHomepage)
 
 
 # Start Network Video Stream
