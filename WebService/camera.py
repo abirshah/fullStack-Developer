@@ -146,14 +146,14 @@ class Video(object):
             for k in self.indexes_body_parts.flatten():
                 x, y, w, h = self.boxes_body_parts[k]
                 # This stores the size of each bounding box into a dictionary
-                self.pet_detection.addingSizeOfBoundingBoxes(
+                self.pet_detection.addSizeOfBoundingBoxes(
                     str(self.body_parts_classes[self.class_ids_body_parts[k]]), w * h)
                 # This stores the proportions of each bounding box into a dictionary
                 self.pet_detection.addingProportionsOfBoundingBoxes(
                     str(self.body_parts_classes[self.class_ids_body_parts[k]]), w, h)
                 center_x = x + w / 2
                 center_y = y + h / 2
-                self.pet_detection.addingCentroid(str(self.body_parts_classes[self.class_ids_body_parts[k]]),
+                self.pet_detection.addCentroid(str(self.body_parts_classes[self.class_ids_body_parts[k]]),
                                                   center_x, center_y)
                 color = colors[k]
                 self.pet_detection.draw_bounding_boxes(boxes=self.boxes_body_parts, index=k,
@@ -166,7 +166,7 @@ class Video(object):
                 if len(center) == 2:
                     dx, dy = center[0][0] - center[1][0], center[0][1] - center[1][1]
                     distance = math.sqrt(dx * dx + dy * dy)
-                    self.pet_detection.addingDistance(class_name, distance)
+                    self.pet_detection.addDistance(class_name, distance)
                     cv2.line(frame, (int(center[0][0]), int(center[0][1])),
                              (int(center[1][0]), int(center[1][1])),
                              (255, 255, 255), thickness=2)
@@ -179,7 +179,7 @@ class Video(object):
                 pet_name = self.user_pets_classes[self.class_ids_user_pets[j]]
                 if pet_name == "Tom" or pet_name == "Hilly" or pet_name == "Doug":
                     print(pet_name, ": User pet was detected")
-                    self.granting_access()
+                    self.grant_access()
                     self.notification.send_notification(pet_name + " Detected", self.email,
                                                         "Detect at time: " + datetime.datetime.now().strftime(
                                                             "%Y/%m/%d-%H:%M:%S"), pet_name)
@@ -202,14 +202,14 @@ class Video(object):
                                                    color=(0, 255, 0), labels=self.labels)
         self.detecting_dogs_and_cats_body_parts(frame)
 
-    def recording_bounding_details(self, index):
+    def record_bounding_details(self, index):
         # This stores the size of each bounding box into a dictionary
         x, y, w, h = self.boxes_coco[index]
         # Adding bounding box sizes and proportion of the cat or dog detected
-        self.pet_detection.addingSizeOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[index]]), w * h)
-        self.pet_detection.addingProportionsOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[index]]), w, h)
+        self.pet_detection.addSizeOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[index]]), w * h)
+        self.pet_detection.addProportionsOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[index]]), w, h)
 
-    def granting_access(self):
+    def grant_access(self):
         if self.pet_detected_counter < 3:
             self.pet_detected_counter += 1
         else:
