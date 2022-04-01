@@ -96,14 +96,13 @@ class Video(object):
             self.net_body_parts,
             width, height)
 
-    def setting_input(self, blob):
-        # self.net.setInput(blob)
+    def set_input(self, blob):
         self.net_coco.setInput(blob)
         self.net_mail_bird.setInput(blob)
         self.net_user_pet.setInput(blob)
         self.net_body_parts.setInput(blob)
 
-    def detecting_birds_and_person(self, index, frame):
+    def detect_birds_and_person(self, index, frame):
         if str(self.coco_classes[self.class_ids_coco[index]]) == 'bird' or \
                 str(self.coco_classes[self.class_ids_coco[index]]) == 'person':
             self.pet_detection.draw_bounding_boxes(boxes=self.boxes_coco, index=index, classes=self.coco_classes,
@@ -116,7 +115,7 @@ class Video(object):
                                                 datetime.datetime.now().strftime("%Y/%m/%d-%H:%M:%S"),
                                                 self.coco_classes[self.class_ids_coco[index]])
 
-    def detecting_birds_and_mail_package(self, index, frame):
+    def detect_birds_and_mail_package(self, index, frame):
         if not len(self.indexes_mail_bird) == 0:
             for j in self.indexes_mail_bird.flatten():
                 if str(self.mail_bird_classes[self.class_ids_mail_bird[j]]) == 'mailing_package':
@@ -139,7 +138,7 @@ class Video(object):
                                                            confidences=self.confidences_mail_bird,
                                                            my_img=frame, color=(0, 0, 255), labels=self.labels)
 
-    def detecting_dogs_and_cats_body_parts(self, frame):
+    def detect_dogs_and_cats_body_parts(self, frame):
         # To select random colors for each bounding box.
         colors = np.random.uniform(0, 255, size=(len(self.boxes_body_parts), 3))
         if len(self.indexes_body_parts) > 0:
@@ -173,7 +172,7 @@ class Video(object):
         else:
             print("No body part was recognized by the model")
 
-    def detecting_cats_and_dogs(self, frame, index):
+    def detect_cats_and_dogs(self, frame, index):
         if not len(self.indexes_user_pets) == 0:
             for j in self.indexes_user_pets.flatten():
                 pet_name = self.user_pets_classes[self.class_ids_user_pets[j]]
@@ -200,7 +199,7 @@ class Video(object):
                                                    class_ids=self.class_ids_coco,
                                                    confidences=self.confidences_coco, my_img=frame,
                                                    color=(0, 255, 0), labels=self.labels)
-        self.detecting_dogs_and_cats_body_parts(frame)
+        self.detect_dogs_and_cats_body_parts(frame)
 
     def record_bounding_details(self, index):
         # This stores the size of each bounding box into a dictionary
@@ -231,20 +230,20 @@ class Video(object):
         height, width, _ = frame.shape
         blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
         self.get_classes()
-        self.setting_input(blob)
+        self.set_input(blob)
         self.get_boxes_details(height, width)
         self.get_indexes()
         updateConsecFrames = len(self.indexes_coco) <= 0
         if len(self.indexes_coco) > 0:
             for i in self.indexes_coco.flatten():
                 # METHOD CALL
-                self.detecting_birds_and_person(i, frame)
+                self.detect_birds_and_person(i, frame)
                 # METHOD CALL
-                self.detecting_birds_and_mail_package(i, frame)
+                self.detect_birds_and_mail_package(i, frame)
                 if str(self.coco_classes[self.class_ids_coco[i]]) == 'cat' or \
                         str(self.coco_classes[self.class_ids_coco[i]]) == 'dog':
                     # METHOD CALL
-                    self.detecting_cats_and_dogs(frame, i)
+                    self.detect_cats_and_dogs(frame, i)
 
             self.consecFrames = 0
             if not self.keyClipSerivce.recording:
