@@ -31,6 +31,8 @@ class Video(object):
         self.keyClipSerivce = KeyClipService(bufSize=32)
         self.consecFrames = 0
         self.pet_detection = petDetection()
+        self.access_granted = False
+        self.pet_detected_counter = list()
         self.notification = NotificationService()
         self.email = "deeppatel770@gmail.com"
         self.indexes_body_parts = None
@@ -76,7 +78,6 @@ class Video(object):
         self.user_pets_classes = self.pet_detection.getClasses('names_files/user_pets.names')
         # reading the classes.names file
         self.body_parts_classes = self.pet_detection.getClasses('names_files/classes.names')
-
 
     def get_boxes_details(self, height, width):
         # Getting the bonding boxes, confidence for each box, and class ids
@@ -178,6 +179,7 @@ class Video(object):
                 pet_name = self.user_pets_classes[self.class_ids_user_pets[j]]
                 if pet_name == "Tom" or pet_name == "Hilly" or pet_name == "Doug":
                     print(pet_name, ": User pet was detected")
+                    self.granting_access()
                     self.notification.send_notification(pet_name + " Detected", self.email,
                                                         "Detect at time: " + datetime.datetime.now().strftime(
                                                             "%Y/%m/%d-%H:%M:%S"), pet_name)
@@ -198,7 +200,7 @@ class Video(object):
                                                    class_ids=self.class_ids_coco,
                                                    confidences=self.confidences_coco, my_img=frame,
                                                    color=(0, 255, 0), labels=self.labels)
-        #self.detecting_dogs_and_cats_body_parts(frame)
+        self.detecting_dogs_and_cats_body_parts(frame)
 
     def recording_bounding_details(self, index):
         # This stores the size of each bounding box into a dictionary
@@ -206,6 +208,18 @@ class Video(object):
         # Adding bounding box sizes and proportion of the cat or dog detected
         self.pet_detection.addingSizeOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[index]]), w * h)
         self.pet_detection.addingProportionsOfBoundingBoxes(str(self.coco_classes[self.class_ids_coco[index]]), w, h)
+
+    def granting_access(self):
+        if self.pet_detected_counter < 3:
+            self.pet_detected_counter += 1
+        else:
+            access_granted = True
+            print("access_granted")
+            self.notification.send_notification("User Pet Detected", self.email,
+                                                "Detect at time: " + datetime.datetime.now().strftime(
+                                                    "%Y/%m/%d-%H:%M:%S"))
+            print("ACCESS GRANTED")
+            self.pet_detected_counter = 0
 
 
     def get_frame(self):
@@ -216,8 +230,6 @@ class Video(object):
         # get the height and width
         height, width, _ = frame.shape
         blob = cv2.dnn.blobFromImage(frame, 1 / 255, (416, 416), (0, 0, 0), swapRB=True, crop=False)
-        #blob = cv2.dnn.blobFromImage(frame, 1 / 255, (640, 640), (0, 0, 0), swapRB=True, crop=False)
-
         self.get_classes()
         self.setting_input(blob)
         self.get_boxes_details(height, width)
