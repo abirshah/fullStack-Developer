@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 class petDetection:
     def __init__(self):
         self.bounding_box_size = dict()
@@ -9,7 +10,6 @@ class petDetection:
         self.font = cv2.FONT_HERSHEY_PLAIN
         self.centroid_dictionary = dict()
         self.ratio_dictionary = dict()
-
 
     # checks whether a bird or a person is detected
     def normallyDetected(self, classNames, classIds, indexes):

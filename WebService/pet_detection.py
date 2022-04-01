@@ -17,7 +17,7 @@ class petDetection:
                 return False
         return True
 
-    def addingDistance(self, className, distance):
+    def addDistance(self, className, distance):
         if className in self.distance_dictionary.keys():
             self.distance_dictionary[className].append(distance)
         else:
@@ -34,7 +34,7 @@ class petDetection:
         return self.ratio_dictionary
 
     # Adds bounding box sizes to the dictionary
-    def addingSizeOfBoundingBoxes(self, class_name, size):
+    def addSizeOfBoundingBoxes(self, class_name, size):
         if class_name in self.bounding_box_size.keys():
             self.bounding_box_size[class_name].append(size)
         else:
@@ -42,7 +42,7 @@ class petDetection:
             self.bounding_box_size[class_name] = list_size
 
     # Adds bounding box sizes to the dictionary
-    def addingProportionsOfBoundingBoxes(self, class_name, width, height):
+    def addProportionsOfBoundingBoxes(self, class_name, width, height):
         if class_name in self.proportion_of_boxes.keys():
             self.proportion_of_boxes[class_name].append([width, height])
         else:
@@ -50,7 +50,7 @@ class petDetection:
             self.proportion_of_boxes[class_name] = list_size
 
     # Adds centroids of each bounding box to the dictionary
-    def addingCentroid(self, className, x, y):
+    def addCentroid(self, className, x, y):
         if className in self.centroid_dictionary.keys():
             self.centroid_dictionary[className].append([x, y])
         else:
@@ -90,9 +90,10 @@ class petDetection:
             classes = [line.strip() for line in f.readlines()]
         return classes
 
-    def draw_bounding_boxes(self, boxes, index, classes, class_ids, confidences, my_img, color):
+    def draw_bounding_boxes(self, boxes, index, classes, class_ids, confidences, my_img, color, labels):
         x, y, w, h = boxes[index]
         label = str(classes[class_ids[index]])
         confidence = str(round(confidences[index], 2))
         cv2.rectangle(my_img, (x, y), (x + w, y + h), color, 2)
         cv2.putText(my_img, label + " " + confidence, (x, y + 20), self.font, 2, color, 2)
+        labels.append(label)

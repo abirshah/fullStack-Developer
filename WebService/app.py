@@ -18,10 +18,11 @@ motion_log = []
 def open_door():
     print("opening door")
     try:
-        urllib.request.urlopen('http://192.168.0.42:5000/open.html')
+        urllib.request.urlopen('http://172.30.145.44:5000/open.html')
     except:
         print("Error opening URL to send door activation signal")
-	
+
+db = SQLAlchemy()
 
 def create_app(cfg: Optional[config.Config] = None) -> Flask:
     if cfg is None:
@@ -98,9 +99,8 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
     def submitbutton():
         open_door()
         return render_template('index.html')
-	
-    return app
 
+    return app
 
 if __name__ == "__main__":
     s3_service = S3Service()
@@ -117,7 +117,9 @@ if __name__ == "__main__":
         print("Downloading weight file yolov4-custom_bird_mail_new.weights")
         s3_service.download_file(key='yolov4-custom_bird_mail_new.weights', bucket='weightfiles',
                                  filename='weight_files/yolov4-custom_bird_mail_new.weights')
-								 
     app = create_app()
-    # app.run(host='127.0.0.1', port=8000)
-    app.run(host='192.168.0.56', port=8000)
+    app.run(host='127.0.0.1', port=8000)
+    # Home local network
+    #app.run(host='192.168.0.56', port=8000)
+    # Concordia network
+    #app.run(host='172.31.113.255', port=8000)
