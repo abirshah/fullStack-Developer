@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:mobile_app/model/ServerGatewayRealImpl.dart';
 import 'package:mobile_app/model/dto/AccessInfo.dart';
 import 'package:mobile_app/model/dto/CapturedImageOrVideo.dart';
@@ -15,16 +14,20 @@ import 'dto/UserBase.dart';
 
 abstract class ServerGateway{
 
+  static bool initializeWithRealImplementation = true;
   static ServerGateway? _instance;
   UserBase? get signedInUser;
 
   static ServerGateway instance()
   {
     if(_instance == null)
-      {
+    {
+      if(initializeWithRealImplementation)
         _instance = ServerGatewayRealImpl();
-        //_instance = ServerGatewayMock();
-      }
+      else
+        _instance = ServerGatewayMock();
+    }
+
 
     return _instance!;
   }
@@ -33,6 +36,8 @@ abstract class ServerGateway{
 
   Future<void> signup(String email,String userId,String password);
   Future<void> signIn(String userId,String password);
+
+  Future<void> openDoor();
 
   Future<List<Pet>> fetchPets();
   Future<List<AccessInfo>> fetchAccessInfo();

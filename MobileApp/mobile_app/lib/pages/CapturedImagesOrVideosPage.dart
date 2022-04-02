@@ -8,9 +8,10 @@ import 'package:android_intent_plus/android_intent.dart';
 
 class CapturedImagesOrVideosPage extends StatefulWidget {
 
+  bool isOnlyVideos = false;
   Future<List<CapturedImageOrVideo>> _stuff;
 
-  CapturedImagesOrVideosPage(this._stuff);
+  CapturedImagesOrVideosPage(this._stuff,this.isOnlyVideos);
 
   @override
   State<CapturedImagesOrVideosPage> createState() =>

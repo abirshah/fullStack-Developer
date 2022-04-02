@@ -6,6 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mobile_app/main.dart';
@@ -17,18 +18,35 @@ import 'package:mobile_app/pages/StartWidget.dart';
 
 void main() {
 
+  ServerGateway.initializeWithRealImplementation = false;
+
+
+
+
+
+  testWidgets('print test', (WidgetTester tester) async {
+    print("hi ");
+  });
 
   testWidgets('server gateway will return null as signed in user at the start!', (WidgetTester tester) async {
+    print("hi 1");
     var gateway = await ServerGateway.instance();
+    print("hi 2");
     expect(gateway.signedInUser,null);
   });
 
 
   testWidgets('sign in will throw no such user exception when the user is not registered', (WidgetTester tester) async {
-    var gateway = await ServerGateway.instance();
+    ServerGateway.initializeWithRealImplementation = false;
+    await tester.pumpWidget(StartWidget());
+    await tester.pump(Duration(seconds: 5));
+    var gateway = ServerGateway.instance();
 
+    print("hi 1");
     try{
+      print("hi 2");
       await gateway.signIn("some user id", "some password");
+      print("hi 3");
     }catch (e)
     {
       print("-----");
@@ -41,9 +59,18 @@ void main() {
 
 
   testWidgets('user will be prompted with empty warning if userid left empty', (WidgetTester tester) async {
-    await tester.pumpWidget(SplashPage());
-    await Future.delayed(Duration(seconds:5));
-    await tester.tap(find.text("Login"));
+
+    const TEST_MOCK_STORAGE = './test/fixtures/core';
+    const channel = MethodChannel('plugins.flutter.io/path_provider');
+
+
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel,(MethodCall methodCall) async {
+      return TEST_MOCK_STORAGE;
+    });
+
+    await tester.pumpWidget(StartWidget());
+    await tester.pump(Duration(seconds: 15));
+    await tester.tap(find.widgetWithText(Text,"Login"));
     expect(find.text('user id cannot be empty'), findsOneWidget);
   });
 }
