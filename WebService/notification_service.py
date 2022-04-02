@@ -7,12 +7,13 @@ class NotificationService:
     def __init__(self):
         self.notification = None
         self.start_time = None
+        self.detected_objects = list()
 
-    def send_notification(self, subject, receiver_email, content):
-        if self.timer():
+    def send_notification(self, subject, receiver_email, content, detected_object):
+        if self.timer(detected_object):
             self.notification = Sender()
             self.notification.log_in()
-            self.notification.send(subject,receiver_email, content)
+            self.notification.send(subject, receiver_email, content)
             self.notification.quit()
         else:
             print("Last email was sent less than a minute ago")
@@ -20,18 +21,23 @@ class NotificationService:
     def start_timer(self):
         self.start_time = time.perf_counter()
 
-    def timer(self):
+    def timer(self, detected_object):
         if self.start_time is None:
             self.start_timer()
+            self.detected_objects.append(detected_object)
             return True
         elapsed_time = time.perf_counter() - self.start_time
-        if elapsed_time == 60:
+        if detected_object not in self.detected_objects:
+            self.detected_objects.append(detected_object)
+            return True
+        if elapsed_time >= 60:
             self.stop()
             return True
         return False
 
     def stop(self):
         self.start_time = None
+        self.detected_objects.clear()
 
 
 class Sender:
