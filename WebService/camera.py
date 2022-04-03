@@ -7,13 +7,19 @@ import time
 import math
 from pet_detection import petDetection
 from notification_service import NotificationService
+from door_service import Door
 
 
 class Video(object):
     def __init__(self, queueSize=128, cameraSource=0, timeout=0):
+        self.video = CamVideoStream('http://169.254.235.178:3000/')
+        if self.video.stream is None or not self.video.stream.isOpened():
+            self.video = CamVideoStream(0)
+            print("Connected to the device's web-cam")
+        else:
+            print("Connected to PiCam")
+        time.sleep(3)
         self.labels = list()
-        self.video = CamVideoStream(0)
-        time.sleep(4)
         self.video.start()
         # network to coco weight file and cfg file
         self.net_coco = cv2.dnn.readNetFromDarknet('cfg_files/yolov4.cfg', 'weight_files/yolov4.weights')
@@ -31,8 +37,9 @@ class Video(object):
         self.keyClipSerivce = KeyClipService(bufSize=32)
         self.consecFrames = 0
         self.pet_detection = petDetection()
+        self.door = Door()
         self.access_granted = False
-        self.pet_detected_counter = list()
+        self.pet_detected_counter = 0
         self.notification = NotificationService()
         self.email = "deeppatel770@gmail.com"
         self.indexes_body_parts = None
@@ -148,7 +155,7 @@ class Video(object):
                 self.pet_detection.addSizeOfBoundingBoxes(
                     str(self.body_parts_classes[self.class_ids_body_parts[k]]), w * h)
                 # This stores the proportions of each bounding box into a dictionary
-                self.pet_detection.addingProportionsOfBoundingBoxes(
+                self.pet_detection.addProportionsOfBoundingBoxes(
                     str(self.body_parts_classes[self.class_ids_body_parts[k]]), w, h)
                 center_x = x + w / 2
                 center_y = y + h / 2
@@ -213,7 +220,7 @@ class Video(object):
             self.pet_detected_counter += 1
         else:
             access_granted = True
-            print("access_granted")
+            self.door.open_door()
             self.notification.send_notification("User Pet Detected", self.email,
                                                 "Detect at time: " + datetime.datetime.now().strftime(
                                                     "%Y/%m/%d-%H:%M:%S"))

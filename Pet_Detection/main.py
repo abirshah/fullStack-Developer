@@ -4,6 +4,7 @@ from pet_detection import petDetection
 import math
 import sys
 import matplotlib.pyplot as plt
+import random
 
 
 # the main method
@@ -65,20 +66,20 @@ def main():
     if len(indexes_coco) > 0:
         for i in indexes_coco.flatten():
             if str(coco_classes[class_ids_coco[i]]) == 'bird' or str(coco_classes[class_ids_coco[i]]) == 'person':
-                pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
+                pet_detection.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
                                        confidences=confidences_coco, my_img=frame, color=(0, 0, 255))
                 print(str(coco_classes[class_ids_coco[i]]) + " found near by")
 
             if len(indexes_mail_bird) > 0:
                 for j in indexes_mail_bird.flatten():
                     if str(mail_bird_classes[class_ids_mail_bird[j]]) == 'mailing_package':
-                        pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
+                        pet_detection.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                                class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
                                                my_img=frame, color=(0, 0, 255))
                         print("Mail package found on the door")
                     elif str(mail_bird_classes[class_ids_mail_bird[j]]) == 'bird_cat_mouth' and str(
                             coco_classes[class_ids_coco[i]]) == 'cat':
-                        pd.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
+                        pet_detection.draw_bounding_boxes(boxes=boxes_mail_bird, index=j, classes=mail_bird_classes,
                                                class_ids=class_ids_mail_bird, confidences=confidences_mail_bird,
                                                my_img=frame, color=(0, 0, 255))
                         print('Bird found in the pets mouth')
@@ -95,15 +96,21 @@ def main():
                                                               confidences=confidences_user_pets, my_img=frame,
                                                               color=(0, 255, 0))
                 else:
-                    pd.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
+                    pet_detection.draw_bounding_boxes(boxes=boxes_coco, index=i, classes=coco_classes, class_ids=class_ids_coco,
                                            confidences=confidences_coco, my_img=frame, color=(0, 255, 0))
                     print('Found to be a Unknown ', str(coco_classes[class_ids_coco[i]]))
 
             if len(indexes_body_parts) > 0:
                 for k in indexes_body_parts.flatten():
+                    r = random.randint(0, 255)
+                    g = random.randint(0, 255)
+                    b = random.randint(0, 255)
+                    rgb = [r, g, b]
+                    print('A Random color is :', rgb)
+                    print(k)
                     pet_detection.draw_bounding_boxes(boxes=boxes_body_parts, index=k, classes=body_parts_classes,
                                            class_ids=class_ids_body_parts, confidences=confidences_body_parts,
-                                           my_img=frame, color=[255, 0, 0])
+                                           my_img=frame, color=rgb)
             else:
                 print("No body part was recognized by the model")
     # Displaying the image
