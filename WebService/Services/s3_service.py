@@ -21,14 +21,6 @@ class S3Service:
             return False
         return True
 
-    def put_file(self, bucket, file_string, key):
-        try:
-            response = self.s3.put_object(Bucket=bucket, Key=key, Body=bytes(file_string))
-        except ClientError as e:
-            logging.error(e)
-            return False
-        return True
-
     def generate_url(self, bucket, key, expiration=360):
         try:
             response = self.s3.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': key},
