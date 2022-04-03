@@ -11,6 +11,7 @@ from notification_service import NotificationService
 
 class Video(object):
     def __init__(self, queueSize=128, cameraSource=0, timeout=0):
+        print(cameraSource)
         self.labels = list()
         self.video = CamVideoStream(cameraSource)
         time.sleep(timeout)
