@@ -5,6 +5,10 @@ from Models.events import Events, EventsSchema
 from app import create_app
 from Models.shared import db
 from camera import Video
+from moto import mock_s3
+import boto3
+from Services.s3_service import S3Service
+import os.path
 
 class FlaskTest(flask_unittest.ClientTestCase):
     # Assign the flask app object
@@ -12,6 +16,8 @@ class FlaskTest(flask_unittest.ClientTestCase):
     app.config["TESTING"] = True
     app.testing = True
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    mock_s3 = mock_s3()
+    bucket_name = 'test-bucket'
 
     def setUp(self, client):
         ctx = self.app.test_request_context()
@@ -21,6 +27,10 @@ class FlaskTest(flask_unittest.ClientTestCase):
         db.session.add(event1)
         db.session.commit()
         ctx.pop()
+        self.mock_s3.start()
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(self.bucket_name)
+        bucket.create()
 
     # Check for response 200
     def test_health_check(self, client):
@@ -70,16 +80,6 @@ class FlaskTest(flask_unittest.ClientTestCase):
             )
         )
 
-    # Provided a video of a cat, the Video class should be able to detect a cat
-    def test_detect_cat(self, client):
-        camera = Video(cameraSource="test_videos/cat.mp4", timeout=0)
-        response = camera.get_frame()
-        labels = response['labels']
-        self.assertTrue('cat' in labels)
-        self.assertTrue('cat_mouth' in labels)
-        self.assertTrue('cat_eye' in labels)
-        self.assertTrue('cat_nose' in labels)
-
     # Provided a video of a mailing package, the Video class should detect a package, person, but not cats
     def test_detect_package(self, client):
         camera = Video(cameraSource="test_videos/package.mp4", timeout=0)
@@ -92,12 +92,21 @@ class FlaskTest(flask_unittest.ClientTestCase):
         self.assertFalse('cat_eye' in labels)
         self.assertFalse('cat_nose' in labels)
 
+    # Provided a video of a cat, the Video class should be able to detect a cat
+    def test_detect_cat(self, client):
+        camera = Video(cameraSource="test_videos/cat.mp4", timeout=0)
+        response = camera.get_frame()
+        labels = response['labels']
+        self.assertTrue('cat' in labels)
+        self.assertTrue('cat_mouth' in labels)
+        self.assertTrue('cat_eye' in labels)
+        self.assertTrue('cat_nose' in labels)
+
     # Provided a video with no objects of interest, the Video class should not detect any objects
     def test_detect_no_objects(self, client):
         camera = Video(cameraSource="test_videos/no_objects.mp4", timeout=0)
         response = camera.get_frame()
         labels = response['labels']
-        print(labels)
         self.assertEqual(len(labels), 0)
         self.assertFalse('mailing_package' in labels)
         self.assertFalse('person' in labels)
@@ -106,6 +115,24 @@ class FlaskTest(flask_unittest.ClientTestCase):
         self.assertFalse('cat_eye' in labels)
         self.assertFalse('cat_nose' in labels)
 
+    def test_s3(self, client):
+        # Test uploading a file
+        filepath = "test_videos/cat.jpeg"
+        key = 'cat.jpeg'
+        s3_service = S3Service()
+        s3_service.upload_file(self.bucket_name, filepath, key)
+
+        s3 = boto3.resource('s3')
+        object = s3.Object(self.bucket_name, key)
+        self.assertIsNotNone(object)
+
+        # Test downloading that file to the tmp directory
+        s3_service.download_file(key, self.bucket_name, 'tmp/test_download_file.jpeg')
+        self.assertTrue(os.path.exists('tmp/test_download_file.jpeg'))
+
+        # Test generating a url
+        result = s3_service.generate_url(self.bucket_name, key)
+        self.assertTrue(key in result)
 
 if __name__ =="__main__":
     unittest.main()

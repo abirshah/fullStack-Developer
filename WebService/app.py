@@ -8,7 +8,7 @@ from Models.shared import db, ma
 from Models.events import Events, EventsSchema
 import os.path
 from Services.s3_service import S3Service
-from Config import config
+import config
 
 db = SQLAlchemy()
 
@@ -17,6 +17,7 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
         cfg = config.Config()
     app = Flask(__name__, template_folder="templates")
     app.config.from_object(cfg)
+
 
     CORS(app)
     basedir = os.path.abspath(os.path.dirname(__file__))
