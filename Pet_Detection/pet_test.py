@@ -8,8 +8,9 @@ import matplotlib.pyplot as plt
 def main():
     pd = petDetection()
     # network to coco weight file and cfg file
-    net = cv2.dnn.readNetFromDarknet('pet_weight/yolov4-custom.cfg', 'pet_weight/yolov4-custom_4000.weights')
-    classes = pd.getClasses('pet_weight/classes.names')
+    net = cv2.dnn.readNetFromDarknet('pet_weight/yolov4-custom_user_pets.cfg',
+                                     'pet_weight/yolov4-custom_user_pets.weights')
+    classes = pd.getClasses('pet_weight/user_pets.names')
     my_img = cv2.imread('test_images/dog3.jpg')
     my_img = cv2.resize(my_img, (416, 416))
 

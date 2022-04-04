@@ -1,6 +1,6 @@
 # Core Library modules
 from typing import Optional
-from flask import Flask, render_template, Response, request, Blueprint, jsonify
+from flask import Flask, render_template, Response, request, Blueprint, jsonify, redirect
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from camera import Video
@@ -8,7 +8,9 @@ from Models.shared import db, ma
 from Models.events import Events, EventsSchema
 import os.path
 from Services.s3_service import S3Service
-import config
+from Config import config
+import urllib.request
+from door_service import Door
 
 db = SQLAlchemy()
 
@@ -17,8 +19,7 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
         cfg = config.Config()
     app = Flask(__name__, template_folder="templates")
     app.config.from_object(cfg)
-
-
+    door = Door()
     CORS(app)
     basedir = os.path.abspath(os.path.dirname(__file__))
     # Init db
@@ -60,6 +61,13 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
         response = s3_service.generate_url(bucket='video-snapshots', key=video_key)
         return jsonify({'videoUrl': response})
 
+    @app.route('/motion/<timestamp>')
+    def motion_detection(timestamp):
+        door.motion_log.append(timestamp)
+        print("motion detected at: " + timestamp)
+        return render_template('index.html')
+        # return (f" Motion Detected at: " + timestamp)
+
     def gen(camera):
         while True:
             response = camera.get_frame()
@@ -71,6 +79,15 @@ def create_app(cfg: Optional[config.Config] = None) -> Flask:
     def video():
         return Response(gen(Video(cameraSource=app.config.get("CAMERA"))),
                         mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    @app.route('/open.html')
+    def goHome():
+        return render_template('index.html')
+
+    @app.route('/submitbutton', methods=['POST'])
+    def submitbutton():
+        door.open_door()
+        return render_template('index.html')
 
     return app
 
@@ -92,3 +109,7 @@ if __name__ == "__main__":
                                  filename='weight_files/yolov4-custom_bird_mail_new.weights')
     app = create_app()
     app.run(host='127.0.0.1', port=8000)
+    # Home local network
+    # app.run(host='192.168.0.56', port=8000)
+    # Concordia network
+    # app.run(host='172.31.113.255', port=8000)
