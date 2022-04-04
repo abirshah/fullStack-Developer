@@ -5,3 +5,4 @@ class Config:
         "mysql://admin:abir1971@pet-project.cqlvbpbplnsv.us-east-2.rds.amazonaws.com/automated_pet_door")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     CAMERA = 0
+    TIMEOUT = 0

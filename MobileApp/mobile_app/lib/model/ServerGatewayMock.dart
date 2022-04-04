@@ -69,6 +69,12 @@ class ServerGatewayMock extends ServerGateway
   }
 
   @override
+  Future<void> openDoor()
+  {
+    return _doAfterDelay(() async{});
+  }
+
+  @override
   Future<bool> isUserSignedIn() {
     return _doAfterDelay(() async{
       await getSignedInUser();
@@ -156,9 +162,14 @@ class ServerGatewayMock extends ServerGateway
   }
 
   Future<File> getTempFile(String fileName) async {
-    var directory = await getApplicationSupportDirectory();
-    var file = File(directory.path+"/"+fileName);
-    return file;
+    try{
+      var directory = await getApplicationSupportDirectory();
+      var file = File(directory.path+"/"+fileName);
+      return file;
+    }catch(e){
+      print(e);
+      throw e;
+    }
   }
 
 

@@ -40,7 +40,7 @@ class MainMenu extends StatelessWidget {
             }, minWidth: 100, height: 50),
           ],
         ),
-        createRoundedCornerRaisedButton("Captured Images", onPress: () {
+        createRoundedCornerRaisedButton("Open Door", onPress: () {
           goToPage(context, CapturedImagesPath);
         }, minWidth: 100, height: 50),
         createRoundedCornerRaisedButton("Captured Videos", onPress: () {

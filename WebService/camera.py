@@ -18,7 +18,7 @@ class Video(object):
             print("Connected to the device's web-cam")
         else:
             print("Connected to PiCam")
-        time.sleep(3)
+        time.sleep(timeout)
         self.labels = list()
         self.video.start()
         # network to coco weight file and cfg file
